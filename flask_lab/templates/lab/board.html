@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block auto_refresh %}
+{% if g.user['role'] == 2 %}
+http-equiv="refresh" content="{{ refresh+10 }}"
+{% else %}
+http-equiv="refresh" content="{{ refresh }}"
+{% endif %}
+{% endblock %}
+
+{% block header %}
+<h1>{% block title %}
+  {% if status == 'done' %}
+  {{ lang('done tickets') }}
+  {% else %}
+  {{ lang('Tickets')}}
+  {% endif %}
+  {% endblock %}
+  {% if status != 'done' %}
+  <a class="btn btn-outline-success" href="{{ url_for('lab.create') }}">{{ lang('New Ticket')}}</a>
+  {% endif %}
+</h1>
+{% endblock %}
+
+{% block content %}
+<div class="d-flex flex-row justify-content-between mb-3">
+  <span></span>
+</div>
+<div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+  {% for ticket in tickets %}
+  <div class="col">
+    <div class="card h-100">
+      <div class="card-body">
+        <h5 class="card-title">{{ ticket['title'] }}</h6>
+          <p class="card-text text-start">{{ ticket['body']|safe }}</p>
+      </div>
+      <div class="card-footer d-flex gap-2 w-100 justify-content-between text-bg-{{ g.priorities[ticket['priority']] }}">
+        <small class="opacity-75 text-nowrap">{{ ticket['username'] }}</small>
+        <small class="opacity-75 text-nowrap">{{ ticket['created'].strftime('%b.%d %H:%M') }}</small>
+        <div class="d-flex">
+          {% if g.user['id'] == ticket['author_id'] or g.user['role'] == 2 %}
+          <a class="btn btn-outline-dark mx-2" href="{{ url_for('lab.update', id=ticket['id']) }}">{{ lang('Edit') }}</a>
+          {% endif %}
+          <form action="{{ url_for('lab.done', id=ticket['id']) }}" method="post">
+            <button id="done" type="submit" class="btn btn-success">{{ lang('Done') }}</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    {% if loop.last %}
+    {% endif %}
+  </div>
+  {% endfor %}
+  {% endblock %}

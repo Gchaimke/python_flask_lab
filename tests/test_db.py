@@ -1,7 +1,8 @@
 import sqlite3
 
 import pytest
-from app.db import get_db
+from lab.db import get_db
+
 
 def test_get_close_db(app):
     with app.app_context():

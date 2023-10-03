@@ -1,0 +1,144 @@
+<form method="post" class="mb-5">
+  <div class="row">
+    <div class="form-floating col-12 col-md-6 mb-2">
+      <input class="form-control" name="name" id="name" value="{{ticket['name']}}"  {% if not ticket['client_id'] %} required {% else %} disabled {% endif %} >
+      <label class="form-label" for="name">{{lang('Customer Name')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md-6 mb-2">
+      <input name="client_id" class="form-control" id="client_id"
+        value="{{ request.form['client_id'] or ticket['client_id']}}" {% if not ticket['client_id'] %} required {% else %} disabled {% endif %}>
+      <label for="client_id" class="form-label">{{lang('Customer Phone')}}</label>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-floating col-12 col-md-3 mb-2">
+      <select class="form-select" name="pc_kind">
+        {% for kind in g.pc_kind %}
+        <option value="{{kind}}" {% if kind==ticket['pc_kind'] %} selected="selected" {% endif %}>
+          {{lang(g.pc_kind[kind])}}
+        </option>
+        {% endfor %}
+      </select>
+      <label class="form-label" for="pc_kind">{{lang('PC Kind')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md-2 mb-2">
+      <select class="form-select" name="pc_manufacturer">
+        {% for manufacturer in g.pc_manufacturers %}
+        <option value="{{manufacturer}}" {% if manufacturer==ticket['pc_manufacturer'] %} selected="selected" {% endif %}>
+          {{g.pc_manufacturers[manufacturer]}}
+        </option>
+        {% endfor %}
+      </select>
+      <label class="form-label" for="pc_manufacturer">{{lang('PC Manufacturer')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md-2 mb-2">
+      <input class="form-control" name="pc_model" id="pc_model" value="{{ticket['pc_model']}}">
+      <label for="pc_model" class="form-label">{{lang('Model')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md mb-2">
+      <input type="number" step="0.1" class="form-control" name="pc_screen_inch" id="pc_screen_inch"
+        value="{{ticket['pc_screen_inch']}}">
+      <label for="pc_screen_inch" class="form-label">{{lang('PC Screen inch')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md mb-2">
+      <select class="form-select" name="pc_color">
+        {% for color in g.colors %}
+        <option value="{{color}}" {% if color==ticket['pc_color'] %} selected="selected" {% endif %}>
+          {{lang(g.colors[color])}}
+        </option>
+        {% endfor %}
+      </select>
+      <label class="form-label" for="pc_color">{{lang('PC Color')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md mb-2">
+      <select class="form-select" name="with_power_supply">
+        {% for value in g.with_power_supply %}
+        <option value="{{value}}" {% if value==ticket['with_power_supply'] %} selected="selected" {% endif %}>
+          {{lang(g.with_power_supply[value])}}
+        </option>
+        {% endfor %}
+      </select>
+      <label class="form-label" for="with_power_supply">{{lang('With Power Supply')}}</label>
+    </div>
+  </div>
+
+  <div class="form-floating mb-2">
+    <input class="form-control" name="pc_login_password" id="pc_login_password" value="{{ticket['pc_login_password']}}">
+    <label for="pc_login_password" class="form-label">{{lang('PC Login Password')}}</label>
+  </div>
+
+  <div class="row">
+    <div class="form-floating col-12 col-md-6 mb-2">
+      <textarea name="cpu_diag" class="form-control" style="height: 100px"
+        id="cpu_diag">{{ request.form['cpu_diag'] or ticket['cpu_diag'] }}</textarea>
+      <label for="cpu_diag" class="form-label">{{lang('CPU Diagnostic')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md-6 mb-2">
+      <textarea name="ram_diag" class="form-control" style="height: 100px"
+        id="ram_diag">{{ request.form['ram_diag'] or ticket['ram_diag'] }}</textarea>
+      <label for="ram_diag" class="form-label">{{lang('RAM Diagnostic')}}</label>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="form-floating col-12 col-md-6 mb-2">
+      <textarea name="disk_diag" class="form-control" style="height: 100px"
+        id="disk_diag">{{ request.form['disk_diag'] or ticket['disk_diag'] }}</textarea>
+      <label for="disk_diag" class="form-label">{{lang('Disks Diagnostic')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md-6 mb-2">
+      <textarea name="video_card_diag" class="form-control" style="height: 100px"
+        id="video_card_diag">{{ request.form['video_card_diag'] or ticket['video_card_diag'] }}</textarea>
+      <label for="video_card_diag" class="form-label">{{lang('Video Card Diagnostic')}}</label>
+    </div>
+  </div>
+
+  <div class="form-floating mb-2">
+    <textarea name="total_diag" class="form-control" style="height: 100px"
+      id="total_diag">{{ request.form['total_diag'] or ticket['total_diag'] }}</textarea>
+    <label for="total_diag" class="form-label">{{lang('Total Diagnostic')}}</label>
+  </div>
+  <div class="form-floating mb-2">
+    <textarea name="spend_parts" class="form-control" style="height: 100px"
+      id="spend_parts">{{ request.form['spend_parts'] or ticket['spend_parts'] }}</textarea>
+    <label for="spend_parts" class="form-label">{{lang('Spend Parts')}}</label>
+  </div>
+
+  <div class="row">
+    <div class="form-floating col-12 col-md-3 mb-2">
+      <input type="number" step="5" class="form-control" name="spend_time_minutes" id="spend_time_minutes"
+        value="{{ticket['spend_time_minutes']}}">
+      <label for="spend_time_minutes" class="form-label">{{lang('Spend Time Minutes')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md-3 mb-2">
+      <select class="form-select" name="priority">
+        {% for priority in g.priorities %}
+        <option value="{{priority}}" {% if priority==ticket['priority'] %} selected="selected" {% endif %}>
+          {{lang(g.priorities[priority])}}
+        </option>
+        {% endfor %}
+      </select>
+      <label class="form-label" for="priority">{{lang('Priority')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md-3 mb-2">
+      <select class="form-select" name="status">
+        {% for status in g.status %}
+        <option value="{{status}}" {% if status==ticket['status'] %} selected="selected" {% endif %}>
+          {{lang(g.status[status])}}
+        </option>
+        {% endfor %}
+      </select>
+      <label class="form-label" for="status">{{lang('Status')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md-3 mb-2">
+      <input type="number" class="form-control" name="price" id="price"
+        value="{{ticket['price']}}">
+      <label for="price" class="form-label">{{lang('price')}}</label>
+    </div>
+  </div>
+  <div class="d-flex gap-2 w-100 justify-content-between mb-5">
+    <div></div>
+    <button type="submit" class="btn btn-primary">{{lang('Submit')}}</button>
+  </div>
+</form>

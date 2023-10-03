@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}Settings{% endblock %}</h1>
+{% endblock %}
+{% block content %}
+<form method="post">
+  <!-- <div class="form-floating mb-3">
+    <input class="form-control" name="language" id="language" value="{{settings['language'] }}">
+    <label class="form-label" for="language">language</label>
+  </div> -->
+  <div class="form-floating mb-3">
+    <input type="number" class="form-control" name="refresh" id="refresh" value="{{settings['refresh'] }}">
+    <label class="form-label" for="refresh">Auto refresh main board in seconds, min 5</label>
+  </div>
+  <div class="form-floating mb-3">
+    <select class="form-select" name="min_role_to_view_board">
+      {% for role in g.roles %}
+      <option value="{{role}}" {% if role==settings['min_role_to_view_board'] %} selected="selected" {% endif %}>
+        {{g.roles.get(role)}}
+      </option>
+      {% endfor %}
+    </select>
+    <label class="form-label" for="min_role_to_view_board">min_role_to_view_board</label>
+  </div>
+
+  <div class="form-floating mb-3">
+    <select class="form-select" name="min_role_to_add">
+      {% for role in g.roles %}
+      <option value="{{role}}" {% if role==settings['min_role_to_add'] %} selected="selected" {% endif %}>
+        {{g.roles.get(role)}}
+      </option>
+      {% endfor %}
+    </select>
+    <label class="form-label" for="min_role_to_add">min_role_to_add</label>
+  </div>
+
+  <div class="form-floating mb-3">
+    <select class="form-select" name="min_role_to_delete">
+      {% for role in g.roles %}
+      <option value="{{role}}" {% if role==settings['min_role_to_delete'] %} selected="selected" {% endif %}>
+        {{g.roles.get(role)}}
+      </option>
+      {% endfor %}
+    </select>
+    <label class="form-label" for="min_role_to_delete">min_role_to_delete</label>
+  </div>
+
+  <div class="form-floating mb-3">
+    <select class="form-select" name="min_role_to_manage_users">
+      {% for role in g.roles %}
+      <option value="{{role}}" {% if role==settings['min_role_to_manage_users'] %} selected="selected" {% endif %}>
+        {{g.roles.get(role)}}
+      </option>
+      {% endfor %}
+    </select>
+    <label class="form-label" for="min_role_to_manage_users">min_role_to_manage_users</label>
+  </div>
+
+  <div class="form-floating mb-3">
+    <select class="form-select" name="min_role_to_manage_settings">
+      {% for role in g.roles %}
+      <option value="{{role}}" {% if role==settings['min_role_to_manage_settings'] %} selected="selected" {% endif %}>
+        {{g.roles.get(role)}}
+      </option>
+      {% endfor %}
+    </select>
+    <label class="form-label" for="min_role_to_manage_settings">min_role_to_manage_settings</label>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+  <a href="{{ url_for('settings.update_db') }}" class="btn btn-primary mx-2">Update DB</a>
+
+</form>
+{% endblock %}

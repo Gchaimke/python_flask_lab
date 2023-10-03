@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% endblock %}
+<main class="form-signin">
+  {% block content %}
+  <form class="login-form" method="post">
+    <h1 class="h3 mb-3 fw-normal">{% block title %}{{lang('Log In')}}{% endblock %}</h1>
+
+    <div class="form-floating">
+      <input type="teax" class="form-control mb-2" name="username" id="floatingInput" placeholder="Username"
+        required="">
+      <label for="floatingInput">{{lang('User Name')}}</label>
+    </div>
+    <div class="form-floating">
+      <input type="password" class="form-control mb-2" name="password" id="floatingPassword" placeholder="Password"
+        required="">
+      <label for="floatingPassword">{{lang('Password')}}</label>
+    </div>
+    <input type="submit" class="w-100 btn btn-lg btn-primary" value="{{lang('Log In')}}">
+  </form>
+  {% endblock %}
+</main>

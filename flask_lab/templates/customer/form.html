@@ -1,0 +1,46 @@
+<form method="post">
+    <div class="row">
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input class="form-control" name="created" id="created" value="{{customer['created']}}" disabled>
+                <label class="form-label" for="created">{{lang('created')}}</label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input class="form-control" name="last_ticket_id" id="last_ticket_id"
+                    value="{{customer['last_ticket_id']}}" disabled>
+                <label class="form-label" for="last_ticket_id">{{lang('last ticket id')}}</label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input class="form-control" name="last_ticket_id" id="last_ticket_id"
+                    value="{{customer['last_ticket_id']}}" disabled>
+                <label class="form-label" for="last_ticket_id">{{lang('Total')}}</label>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input class="form-control" name="name" id="name" value="{{customer['name']}}">
+                <label class="form-label" for="name">{{lang('name')}}</label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input class="form-control" name="phone" id="phone" value="{{customer['phone']}}">
+                <label class="form-label" for="phone">{{lang('phone')}}</label>
+            </div>
+        </div>
+        <div class="col">
+            <div class="form-floating mb-3">
+                <input class="form-control" name="email" id="email" value="{{customer['email']}}">
+                <label class="form-label" for="email">{{lang('email')}}</label>
+            </div>
+        </div>
+    </div>
+    <input type="hidden" class="form-control" name="language" id="language" value="{{customer['language']}}">
+    <button type="submit" class="btn btn-primary">{{lang('Submit')}}</button>
+</form>

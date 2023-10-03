@@ -1,5 +1,6 @@
 Options +ExecCGI
 AddHandler wsgi-script .wsgi
 RewriteEngine On
+RewriteCond %{ENV:REDIRECT_STATUS} ^$
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.*)$ /index.wsgi/$1 [QSA,PT,L]

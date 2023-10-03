@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}{{lang('Edit')}} #{{ticket['id']}}
+  {% if ticket['id'] > 0 %}
+  <a id="delete_message" href="#" class="btn btn-outline-danger">{{lang('Delete')}}</a>
+  {% endif %}
+  {% endblock %}
+</h1>
+{% endblock %}
+
+{% block content %}
+{% include 'lab/form.html' %}
+<form id="form_delete" action="{{ url_for('lab.delete', id=ticket['id']) }}" method="post">
+</form>
+{% endblock %}

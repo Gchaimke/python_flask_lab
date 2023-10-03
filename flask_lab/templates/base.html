@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="{{g.language}}">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="author" content="Chaim Gorbov">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.png') }}" sizes="32x32" type="image/png">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  {% if g.language == 'il' %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap5/bootstrap.rtl.min.css') }}">
+  {% else %}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap5/bootstrap.min.css') }}">
+  {% endif %}
+  <meta {% block auto_refresh %}{% endblock %}>
+  <title>{% block title %}{% endblock %} - {{g.app_name}} v{{g.app_ver}}</title>
+</head>
+
+<body class="text-center {% if g.language == 'il' %}rtl{% endif %}">
+  {% include 'nav.html' %}
+  <main class="container">
+    {% for message in get_flashed_messages(with_categories=True) %}
+    <div class="alert alert-{{ message[0] }} messages d-flex gap-2 w-100 justify-content-between">
+      {{ message[1] }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+    <section class="content">
+      <header>
+        {% block header %}{% endblock %}
+      </header>
+      {% block content %}{% endblock %}
+    </section>
+  </main>
+  <script src="{{ url_for('static', filename='js/bootstrap5/bootstrap.bundle.min.js') }}"></script>
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+
+</html>

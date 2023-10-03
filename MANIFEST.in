@@ -1,4 +1,4 @@
-include app/schema.sql
-graft app/static
-graft app/templates
+include flask_lab/schema.sql
+graft flask_lab/static
+graft flask_lab/templates
 global-exclude *.pyc

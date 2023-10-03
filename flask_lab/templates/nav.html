@@ -1,0 +1,45 @@
+<nav class="navbar navbar-expand-md navbar-dark bg-dark mb-4">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="{{ url_for('index') }}">{{g.app_name}}</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                {% if g.user %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        {{lang('Hello', format=g.user['view_name'].capitalize())}}!
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item"
+                                href="{{ url_for('user.edit', id=g.user['id']) }}">{{lang('User Settings')}}</a></li>
+                        <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">{{lang('Log Out')}}</a></li>
+                    </ul>
+                </li>
+                {% else %}
+                <!-- <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.register') }}">{{lang('Register')}}</a>
+                </li> -->
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('auth.login') }}">{{lang('Log In')}}</a>
+                </li>
+                {% endif %}
+                {% if g.user.role == 2 %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">{{lang('Admin')}}</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{{ url_for('lab.index_done') }}">{{lang('Done')}}</a>
+                        <li><a class="dropdown-item" href="{{ url_for('user.list') }}">{{lang('Users')}}</a>
+                        <li><a class="dropdown-item" href="{{ url_for('customer.list') }}">{{lang('Customers')}}</a>
+                        <li><a class="dropdown-item" href="{{ url_for('settings.index') }}">{{lang('Settings')}}</a>
+                    </ul>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</nav>

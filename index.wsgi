@@ -1,13 +1,20 @@
 
 import logging
 import sys
-sys.path.append('/home/d/denmb//wordpress_2/public_html/')
-sys.path.append('/home/d/denmb/myenv/lib/python3.6/site-packages/')
+from flask import Flask
 
-from app import create_app
+
+BASE_DIR = '/home/d/denmb/flask_lab/public_html'
+sys.path.insert(0, BASE_DIR + '/flask_lab')
+sys.path.insert(1, BASE_DIR + '/venv/lib/python3.10/site-packages')
+activate_this = BASE_DIR + '/venv/bin/activate_this.py'
+exec(open(activate_this).read())
+
+import flask_lab
 
 logging.basicConfig(stream=sys.stderr)
-app = create_app()
+
+app = flask_lab.create_app()
 application = app
 
 if __name__ == '__main__':

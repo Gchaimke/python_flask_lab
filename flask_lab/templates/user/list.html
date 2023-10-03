@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>{% block title %}{{lang('Users')}}{% endblock %}</h1>
+{% endblock %}
+{% block content %}
+<div class="d-flex flex-row justify-content-between mb-3">
+  <span></span>
+  <a class="btn btn-success" href="{{ url_for('user.create') }}">{{lang('New')}}</a>
+</div>
+<ul class="list-group">
+  {% for user in users %}
+  <li class="list-group-item d-flex justify-content-between align-items-center">
+    {{user.username}}
+    <div class="d-flex flex-row">
+      <a class="btn btn-info mx-3" href="{{ url_for('user.edit', id=user.id) }}">{{lang('Edit')}}</a>
+      <form class="mx-3" action="{{ url_for('user.delete', id=user.id) }}" method="post">
+        <button id="delete_message" type="submit" class="btn btn-danger"
+          onclick="confirm('Are you sure?');">{{lang('Delete')}}</button>
+      </form>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% endblock %}

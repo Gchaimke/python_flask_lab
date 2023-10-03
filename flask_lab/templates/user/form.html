@@ -1,0 +1,42 @@
+<form method="post">
+    {% if not user['id'] or g.user['role'] == 2 %}
+    <div class="form-floating mb-3">
+        <input class="form-control" name="username" id="username" value="{{user['username'] }}">
+        <label class="form-label" for="username">{{lang('username')}}</label>
+    </div>
+    {% endif %}
+    {% if g.user['role'] == 2 %}
+    <div class="form-floating mb-3">
+        <input class="form-control" name="status" id="status" value="{{user['status'] }}">
+        <label class="form-label" for="status">{{lang('status')}}</label>
+    </div>
+    <div class="form-floating mb-3">
+        <select class="form-select" name="role">
+            {% for role in g.roles %}
+            <option value="{{role}}" {% if role==user['role'] %} selected="selected" {% endif %}>
+                {{g.roles.get(role)}}
+            </option>
+            {% endfor %}
+        </select>
+        <label class="form-label" for="role">{{lang('role')}}</label>
+    </div>
+
+    {% endif %}
+    <div class="form-floating mb-3">
+        <input class="form-control" name="view_name" id="view_name" value="{{user['view_name'] }}">
+        <label class="form-label" for="view_name">{{lang('view name')}}</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input class="form-control" name="email" id="email" value="{{user['email'] }}">
+        <label class="form-label" for="email">{{lang('email')}}</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input type="hidden" class="form-control" name="language" id="language" value="{{user['language'] }}">
+        <label class="form-label" for="language">{{lang('language')}}</label>
+    </div>
+    <div class="form-floating mb-3">
+        <input class="form-control" name="password" id="password" value="">
+        <label class="form-label" for="password">{{lang('password')}}</label>
+    </div>
+    <button type="submit" class="btn btn-primary">{{lang('Submit')}}</button>
+</form>

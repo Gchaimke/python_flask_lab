@@ -1,4 +1,4 @@
-from app import create_app
+from lab import create_app
 
 
 def test_config():

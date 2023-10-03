@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Create {{ customer['name'] }}{% endblock %}</h1>
+{% endblock %}
+{% block content %}
+{% include 'customer/form.html' %}
+{% endblock %}

@@ -1,22 +1,16 @@
 # python_flask_lab
 
-simple flask starter project with SQLLite
+# simple flask starter project with SQLLite
+# start app from commandline
+.\venv\Scripts\activate
+pip install -r requirements.txt
 
-# Instalation
+# use start.sh or start.bat to run flask-lab with debugger
 
-add new environment, from project root run:
-> py -3 -m venv venv
-> venv\Scripts\activate
-> pip install Flask
+# init DB with ssh
+python -m flask init-db
+# init db with url
+init DB with http://127.0.0.1:5000/init
 
-Install app
-> pip install -e .
-
-Initialize the Database File
-> flask init-db
-
-For test install:
-> pip install pytest coverage
-
-run program from index.wsgi or test
-> flask run
+# For test install:
+pip install pytest coverage
