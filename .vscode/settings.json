@@ -1,7 +1,11 @@
 {
-    "python.testing.pytestArgs": [
-        "tests"
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "lab",
+            "database": "${workspaceFolder:flask_lab}/instance/db.sqlite"
+        }
     ],
-    "python.testing.unittestEnabled": false,
-    "python.testing.pytestEnabled": true
+    "sqltools.useNodeRuntime": true
 }

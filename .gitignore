@@ -14,3 +14,4 @@ flask_lab/.env
 .vscode/settings.json
 instance/db.sqlite
 instance/config.py
+.vscode/settings.json
