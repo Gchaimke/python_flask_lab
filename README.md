@@ -18,5 +18,5 @@ Initialize the Database File
 For test install:
 > pip install pytest coverage
 
-run program from index.wsgi or 
+run program from index.wsgi or test
 > flask run
