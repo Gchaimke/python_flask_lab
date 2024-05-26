@@ -73,7 +73,6 @@ def init_db_command(force):
         click.echo('Table "users" exists, please use "python -m flask init-db --force" parameter to clean start.')
 
 
-
 def init_app(app):
     app.teardown_appcontext(close_db)
     app.cli.add_command(init_db_command)

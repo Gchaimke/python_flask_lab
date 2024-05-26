@@ -41,8 +41,6 @@ def edit(id):
         else:
             flash('Can\'t update customer data', category='danger')
 
-
-
     if g.user['role'] >= 1:
         return render_template("customer/edit.html", customer=customer)
     else:

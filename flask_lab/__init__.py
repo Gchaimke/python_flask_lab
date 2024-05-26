@@ -30,20 +30,10 @@ def create_app(test_config=None):
         pass
 
     db.init_app(app)
-
-    
     app.register_blueprint(auth.bp)
-
-    
     app.register_blueprint(settings.bp)
-    
-    
     app.register_blueprint(user.bp)
-
-    
     app.register_blueprint(lab.bp)
-
-    
     app.register_blueprint(customer.bp)
 
     app.add_url_rule('/', endpoint='index')
