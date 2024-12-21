@@ -4,7 +4,7 @@ import sys
 from flask import Flask
 
 
-BASE_DIR = '/home/d/denmb/flask_lab/public_html'
+BASE_DIR = '/home/d/denmb/mc88.co.il/public_html'
 sys.path.insert(0, BASE_DIR + '/flask_lab')
 sys.path.insert(1, BASE_DIR + '/venv/lib/python3.10/site-packages')
 activate_this = BASE_DIR + '/venv/bin/activate_this.py'

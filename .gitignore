@@ -9,6 +9,11 @@ dist/
 build/
 *.egg-info/
 .vscode/
+ctime/
+games/
+sp/
+test_sp/
+wt/
 flask_lab/logs/
 flask_lab/.env
 .vscode/settings.json

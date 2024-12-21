@@ -1,6 +1,6 @@
 
 
-APP_NAME = 'MC88 Lab'
+APP_NAME = 'Flask Lab'
 APP_VERSION = 1.1
 ROOT_PATH = '/home/d/denmb/flask_lab/public_html/flask_lab'
 STATUS = {0: 'new', 1: 'in progress', 2: 'waiting for customer', 3: 'done', 4: 'cenceled'}
