@@ -1,8 +1,10 @@
 
 
+import os
+
 APP_NAME = 'Flask Lab'
 APP_VERSION = 1.1
-ROOT_PATH = '/home/d/denmb/mc88.co.il/public_html/flask_lab'
+ROOT_PATH, _ = os.path.split(os.path.realpath(__file__))
 STATUS = {0: 'new', 1: 'in progress', 2: 'waiting for customer', 3: 'done', 4: 'cenceled'}
 PC_KIND = {0: 'PC', 1: 'Laptop', 2: 'Tablet', 3: 'All in One'}
 COLORS = {0: 'Black', 1: 'White', 2: 'Red', 3: 'Pink', 4: 'Grey', 100: 'Other'}

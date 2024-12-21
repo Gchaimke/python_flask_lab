@@ -1,16 +1,14 @@
 
 import logging
 import sys
+import os
 from flask import Flask
 
-from flask_lab.const import ROOT_PATH
 
-
-# BASE_DIR = '/home/d/denmb/mc88.co.il/public_html'
-sys.path.insert(0, ROOT_PATH)
-sys.path.insert(1, ROOT_PATH + '/venv/lib/python3.10/site-packages')
-activate_this = ROOT_PATH + '/venv/bin/activate_this.py'
-exec(open(activate_this).read())
+path, _ = os.path.split(os.path.realpath(__file__))
+sys.path.insert(0, path)
+sys.path.insert(1, f'{path}/venv/lib/python3.10/site-packages')
+exec(open(f'{path}/venv/bin/activate_this.py').read())
 
 import flask_lab
 
