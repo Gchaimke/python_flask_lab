@@ -9,7 +9,7 @@ from .auth import min_role_required
 from .db import init_db, insert_to_db, update_by_id, delete_by_id, get_by_id, get_join
 from . import const
 
-bp = Blueprint('lab', __name__)
+bp = Blueprint('lab', __name__, url_prefix='/lab')
 
 
 @bp.before_app_request

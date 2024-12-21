@@ -1,0 +1,291 @@
+{% extends 'public/clean.html' %}
+
+{% block header %}
+{% include 'public/header.html' %}
+{% endblock %}
+<main class="public">
+    {% block content %}
+
+    <main class="index-page">
+
+        <!-- Hero Section -->
+        <section id="hero" class="hero section">
+
+            <img src="{{ url_for('static', filename='img/public/hero-bg2.jpg') }}" alt="" data-aos="fade-in" class="">
+
+            <div class="container text-center" data-aos="fade-up" data-aos-delay="100">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h2>{{ lang('the lab service in tel aviv') }}</h2>
+                        <p>{{ lang('repairing laptops and pcs') }}</p>
+                        <a href="#about" class="btn-get-started">{{ lang('about') }}</a>
+                    </div>
+                </div>
+            </div>
+
+        </section><!-- /Hero Section -->
+
+        <!-- About Section -->
+        <section id="about" class="about section">
+
+            <!-- Section Title -->
+            <div class="container section-title" data-aos="fade-up">
+                <h2>{{ lang('about') }}</h2>
+                <p>{{ lang('we are repairing all kind laptops and pcs, from all comapnies. we love to repair apple laptops and gaming computers') }}</p>
+            </div><!-- End Section Title -->
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="row gy-4">
+                    <div class="col-lg-6">
+                        <img src="{{ url_for('static', filename='img/public/about.jpg') }}" class="img-fluid" alt="">
+                    </div>
+                    <div class="col-lg-6 content">
+                        <h3>{{ lang('we happy when our customers are happy') }}</h3>
+                        <p class="fst-italic">
+                            {{ lang('our customers are the most important thing for us, we are doing the best to make them happy') }}
+                        </p>
+                        <ul>
+                            <li><i class="bi bi-check2-all"></i> <span>{{ lang('quick service') }}</span>
+                            </li>
+                            <li><i class="bi bi-check2-all"></i> <span>{{ lang('fare prices') }}</span>
+                            </li>
+                            <li><i class="bi bi-check2-all"></i> <span>{{ lang('clients satisfaction') }}</span></li>
+                        </ul>
+                        <p>{{ lang('we will fix your computer on time, for best price and with the best service. we fixing laptops and pcs from all companies.') }}</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </section><!-- /About Section -->
+
+        <!-- Why Us Section -->
+        <section id="why-us" class="why-us section">
+
+            <!-- Section Title -->
+            <div class="container section-title" data-aos="fade-up">
+                <h2>{{ lang('why us') }}</h2>
+                <p>{{ lang('we have more than 10 years of experience in repairing laptops and pcs') }}</p>
+            </div><!-- End Section Title -->
+
+            <div class="container">
+
+                <div class="row gy-4" data-aos="fade-up" data-aos-delay="100">
+
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="img">
+                                <img src="{{ url_for('static', filename='img/public/why-us-1.jpg') }}" alt="" class="img-fluid">
+                                <div class="icon"><i class="bi bi-hdd-stack"></i></div>
+                            </div>
+                            <h2 class="title"><a href="#" class="stretched-link">{{ lang('our mission') }}</a></h2>
+                            <p>{{ lang('we have a mission to make our customers happy') }}</p>
+                        </div>
+                    </div><!-- End Card Item -->
+
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                        <div class="card">
+                            <div class="img">
+                                <img src="{{ url_for('static', filename='img/public/why-us-2.jpg') }}" alt="" class="img-fluid">
+                                <div class="icon"><i class="bi bi-brightness-high"></i></div>
+                            </div>
+                            <h2 class="title"><a href="#" class="stretched-link">{{ lang('our plan') }}</a></h2>
+                            <p>{{ lang('give the best service for the best price') }}</p>
+                        </div>
+                    </div><!-- End Card Item -->
+
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                        <div class="card">
+                            <div class="img">
+                                <img src="{{ url_for('static', filename='img/public/why-us-3.jpg') }}" alt="" class="img-fluid">
+                                <div class="icon"><i class="bi bi-calendar4-week"></i></div>
+                            </div>
+                            <h2 class="title"><a href="#" class="stretched-link">{{ lang('our vision') }}</a></h2>
+                            <p>{{ lang('if we not fix your computer, you will not pay') }}</p>
+                        </div>
+                    </div><!-- End Card Item -->
+
+                </div>
+
+            </div>
+
+        </section><!-- /Why Us Section -->
+
+        <!-- Services Section -->
+        <section id="services" class="services section light-background">
+
+            <!-- Section Title -->
+            <div class="container section-title" data-aos="fade-up">
+                <h2>{{ lang('Services') }}</h2>
+                <p>{{ lang('this is our services') }}</p>
+            </div><!-- End Section Title -->
+
+            <div class="container">
+
+                <div class="row gy-4">
+
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="service-item  position-relative">
+                            <div class="icon">
+                                <i class="bi bi-activity"></i>
+                            </div>
+                            <a href="" class="stretched-link">
+                                <h3>{{ lang('slowness diagnostic') }}</h3>
+                            </a>
+                            <p>{{ lang('diagnose overheating and slowness') }}</p>
+                        </div>
+                    </div><!-- End Service Item -->
+
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="200">
+                        <div class="service-item position-relative">
+                            <div class="icon">
+                                <i class="bi bi-broadcast"></i>
+                            </div>
+                            <a href="" class="stretched-link">
+                                <h3>{{ lang('internet problems') }}</h3>
+                            </a>
+                            <p>{{ lang('issues with internet connection by wifi or cable') }}</p>
+                        </div>
+                    </div><!-- End Service Item -->
+
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="300">
+                        <div class="service-item position-relative">
+                            <div class="icon">
+                                <i class="bi bi-easel"></i>
+                            </div>
+                            <a href="service-details.html" class="stretched-link">
+                                <h3>Ledo Markt</h3>
+                            </a>
+                            <p>Ut excepturi voluptatem nisi sed. Quidem fuga consequatur. Minus ea aut. Vel qui id
+                                voluptas adipisci eos
+                                earum corrupti.</p>
+                        </div>
+                    </div><!-- End Service Item -->
+
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="400">
+                        <div class="service-item position-relative">
+                            <div class="icon">
+                                <i class="bi bi-bounding-box-circles"></i>
+                            </div>
+                            <a href="" class="stretched-link">
+                                <h3>Asperiores Commodit</h3>
+                            </a>
+                            <p>Non et temporibus minus omnis sed dolor esse consequatur. Cupiditate sed error ea fuga
+                                sit provident
+                                adipisci neque.</p>
+                        </div>
+                    </div><!-- End Service Item -->
+
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="500">
+                        <div class="service-item position-relative">
+                            <div class="icon">
+                                <i class="bi bi-calendar4-week"></i>
+                            </div>
+                            <a href="" class="stretched-link">
+                                <h3>Velit Doloremque</h3>
+                            </a>
+                            <p>Cumque et suscipit saepe. Est maiores autem enim facilis ut aut ipsam corporis aut. Sed
+                                animi at autem
+                                alias eius labore.</p>
+                        </div>
+                    </div><!-- End Service Item -->
+
+                    <div class="col-lg-4 col-md-6" data-aos="fade-up" data-aos-delay="600">
+                        <div class="service-item position-relative">
+                            <div class="icon">
+                                <i class="bi bi-chat-square-text"></i>
+                            </div>
+                            <a href="" class="stretched-link">
+                                <h3>Dolori Architecto</h3>
+                            </a>
+                            <p>Hic molestias ea quibusdam eos. Fugiat enim doloremque aut neque non et debitis iure.
+                                Corrupti recusandae
+                                ducimus enim.</p>
+                        </div>
+                    </div><!-- End Service Item -->
+
+                </div>
+
+            </div>
+
+        </section><!-- /Services Section -->
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact section">
+
+            <!-- Section Title -->
+            <div class="container section-title" data-aos="fade-up">
+                <h2>{{ lang('contact')}}</h2>
+            </div><!-- End Section Title -->
+
+            <div class="container" data-aos="fade-up" data-aos-delay="100">
+
+                <div class="row gy-4" data-aos="fade-up" data-aos-delay="200">
+
+                    <div class="col-lg-4">
+                        <div class="info-item d-flex flex-column justify-content-center align-items-center">
+                            <i class="bi bi-geo-alt"></i>
+                            <h3>{{ lang('address') }}</h3>
+                            <a target="_blank" href="https://maps.google.com/maps/dir//Allenby+St+88+Tel+Aviv-Jaffa/@32.0669293,34.771366,14z/data=!4m5!4m4!1m0!1m2!1m1!1s0x151d4c8254c5c265:0x9db5600bf39554ef">
+                                {{ lang('allenby 88 street, tel aviv') }}
+                            </a>
+                        </div>
+                    </div><!-- End Info Item -->
+
+                    <div class="col-lg-4">
+                        <div
+                            class="info-item d-flex flex-column justify-content-center align-items-center info-item-borders">
+                            <i class="bi bi-telephone"></i>
+                            <h3>{{ lang('call us') }}</h3>
+                            <a href="tel:035449029">03-544-9029</a>
+                        </div>
+                    </div><!-- End Info Item -->
+
+                    <div class="col-lg-4">
+                        <div class="info-item d-flex flex-column justify-content-center align-items-center ltr">
+                            <i class="bi bi-whatsapp"></i>
+                            <h3>{{ lang('whatsapp') }}</h3>
+                            <a href="http://wa.me/972549884498">+972-54-988-4498</a>
+                        </div>
+                    </div><!-- End Info Item -->
+
+                </div>
+            </div>
+
+        </section><!-- /Contact Section -->
+
+    </main>
+
+    <footer id="footer" class="footer light-background">
+        <div class="container">
+            <h3 class="sitename">MC88</h3>
+            <p>{{ lang('the lab service in tel aviv') }}</p>
+            <!-- <div class="social-links d-flex justify-content-center">
+                <a href=""><i class="bi bi-twitter-x"></i></a>
+                <a href=""><i class="bi bi-facebook"></i></a>
+                <a href=""><i class="bi bi-instagram"></i></a>
+                <a href=""><i class="bi bi-skype"></i></a>
+                <a href=""><i class="bi bi-linkedin"></i></a>
+            </div> -->
+            <div class="container">
+                <div class="copyright">
+                    <span>Copyright</span> <strong class="px-1 sitename">mc88.co.il</strong> <span>All Rights
+                        Reserved</span>
+                </div>
+                <div class="credits">
+                    Designed by Chaim Gorbov
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scroll Top -->
+    <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Preloader -->
+    <div id="preloader"></div>
+
+    {% endblock %}
+</main>

@@ -14,7 +14,7 @@
   {% endif %}
   <meta {% block auto_refresh %}{% endblock %}>
   <title>{% block title %}{% endblock %} - {{g.app_name}} v{{g.app_ver}}</title>
-</head>
+</link>
 
 <body class="text-center {% if g.language == 'il' %}rtl{% endif %}">
   {% include 'nav.html' %}
