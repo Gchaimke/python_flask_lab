@@ -11,21 +11,6 @@ from . import const
 
 bp = Blueprint('pablic', __name__)
 
-
-@bp.before_app_request
-def set_const():
-    g.roles = const.ROLES
-    g.app_name = const.APP_NAME
-    g.app_ver = const.APP_VERSION
-    g.priorities = const.PIORITY
-    g.status = const.STATUS
-    g.language = const.LANGUAGE
-    g.pc_manufacturers = const.PC_MANUFACTURERS
-    g.pc_kind = const.PC_KIND
-    g.colors = const.COLORS
-    g.with_power_supply = {0: 'no', 1: 'yes'}
-
-
 @bp.route('/')
 def index():
     return render_template('public/main.html')

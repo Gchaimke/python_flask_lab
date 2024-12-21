@@ -63,7 +63,7 @@ def login():
             session.clear()
             session['user_id'] = user['id']
             current_app.logger.info(f'User loged in {username}')
-            return redirect(url_for('index'))
+            return redirect(url_for('lab.index'))
 
         flash(error, category='danger')
 
@@ -108,7 +108,7 @@ def min_role_required(min_role_to):
             if not g.user or g.user['role'] < settings[f'min_role_to_{min_role_to}']:
                 if g.user:
                     flash(f"You don\'t have permissions for this!", category='danger')
-                return render_template('guest.html')
+                return render_template('public/main.html')
 
             return view(**kwargs)
         return wrapped_view
