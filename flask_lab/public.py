@@ -16,13 +16,21 @@ def index():
 
 @bp.route('/matenim')
 def matenim():
-    images = [f for f in os.listdir(const.MATENIM_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))]
-    products = []
-    for filename in images:
-        clean_file_name = filename.removesuffix('.jpg').replace('_', ' ').replace('-', ' ').title()
-        products.append((clean_file_name, filename))
-    return render_template('public/matenim.html', products=products)
+    categories = ['dell', 'hp', 'lenovo', 'asus', 'acer', 'msi', 'apple', 'samsung', 'sony', 'toshiba', 'fujitsu', 'lg',
+                  'microsoft', 'xiaomi', 'huawei', 'google']
+    categories.sort()
+    categories = [category.title() for category in categories]
+    return render_template('public/matenim.html', categories=categories)
 
+
+@bp.route('/matenim/<category>')
+def matenim_category(category):
+    products = []
+    for filename in (f for f in os.listdir(const.MATENIM_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
+        if category.lower() in filename.lower():
+            clean_file_name = filename.removesuffix('.jpg').replace('_', ' ').replace('-', ' ').title()
+            products.append((clean_file_name, filename))
+    return render_template('public/category.html', products=products)
 
 # Catch-all route for non-existing pages
 @bp.app_errorhandler(404)
@@ -56,7 +64,8 @@ def copy_matching_images():
     cutted_regex = re.compile(cutted_pattern)
 
     # Iterate through files in the source folder
-    for filename in list_jpeg_files(source_folder):
+    images = [f for f in os.listdir(source_folder) if f.lower().endswith(('.jpg', '.jpeg'))]
+    for filename in images:
         if all_regex.match(filename):
             all_ps_img.add(filename)
             if cutted_regex.match(filename):
