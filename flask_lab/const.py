@@ -18,8 +18,6 @@ TICKETS_DB = 'ticket'
 LANGUAGE = 'il'
 
 MATENIM_FOLDER = f'{ROOT_PATH}/static/img/public/products/matenim'
-MATENIM_IMAGES = [f for f in os.listdir(MATENIM_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))]
-
 
 LOGGER_CONFIG = {
     "version": 1,

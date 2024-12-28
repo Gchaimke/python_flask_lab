@@ -16,8 +16,9 @@ def index():
 
 @bp.route('/matenim')
 def matenim():
+    images = [f for f in os.listdir(const.MATENIM_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))]
     products = []
-    for filename in const.MATENIM_IMAGES:
+    for filename in images:
         clean_file_name = filename.removesuffix('.jpg').replace('_', ' ').replace('-', ' ').title()
         products.append((clean_file_name, filename))
     return render_template('public/matenim.html', products=products)
