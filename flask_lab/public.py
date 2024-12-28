@@ -1,7 +1,8 @@
 from sqlite3 import OperationalError
 import sqlite3
+from urllib.parse import unquote
 from flask import (
-    Blueprint, current_app, flash, g, redirect, render_template, request, url_for
+    Blueprint, app, current_app, flash, g, redirect, render_template, request, url_for
 )
 from werkzeug.exceptions import abort
 
@@ -14,4 +15,16 @@ bp = Blueprint('pablic', __name__)
 @bp.route('/')
 def index():
     return render_template('public/main.html')
+
+
+# Catch-all route for non-existing pages
+@bp.app_errorhandler(404)
+def page_not_found(e):
+    # Log the requested URL (optional)
+    print(f"404 error: {request.url} {e}")
+    clean_url = unquote(request.path)
+    if last_slash := clean_url.split('/'):
+        last_slash = last_slash[-1]
+    # Respond with a custom message or redirect
+    return render_template('public/main.html', requested_url=clean_url, last_slash=last_slash)
 
