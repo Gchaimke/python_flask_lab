@@ -1,10 +1,3 @@
-/**
- * Template Name: Siimple
- * Template URL: https://bootstrapmade.com/free-bootstrap-landing-page/
- * Updated: Aug 07 2024 with Bootstrap v5.3.3
- * Author: BootstrapMade.com
- * License: https://bootstrapmade.com/license/
- */
 
 ;(function () {
   'use strict'
@@ -123,7 +116,7 @@
             top: section.offsetTop - parseInt(scrollMarginTop),
             behavior: 'smooth'
           })
-        }, 100)
+        }, 5000)
       }
     }
   })
