@@ -1,10 +1,13 @@
+import os
+
 from urllib.parse import unquote
 from flask import Blueprint, render_template, request
 
 from . import const
 
-unique_not_found_urls = set()
 bp = Blueprint('pablic', __name__)
+
+unique_not_found_urls = set()
 
 @bp.route('/')
 def index():
@@ -13,7 +16,11 @@ def index():
 
 @bp.route('/matenim')
 def matenim():
-    return render_template('public/matenim.html')
+    products = []
+    for filename in list_jpeg_files(const.MATENIM_FOLDER):
+        clean_file_name = filename.removesuffix('.jpg').replace('_', ' ').replace('-', ' ').title()
+        products.append((clean_file_name, filename))
+    return render_template('public/matenim.html', products=products)
 
 
 # Catch-all route for non-existing pages
@@ -29,9 +36,8 @@ def page_not_found(e):
     # Respond with a custom message or redirect
     return render_template('public/main.html', requested_url=clean_url, last_slash=last_slash)
 
-@bp.route('/matenim/copy')
+
 def copy_matching_images():
-    import os
     import re
     import shutil
     total = []
@@ -39,22 +45,17 @@ def copy_matching_images():
     all_ps_img = set()
     # Define source and destination folders
     source_folder = f'{const.ROOT_PATH}/../wp-content/uploads'
-    destination_folder = f'{const.ROOT_PATH}/static/img/public/products/matenim'
 
     # Define the pattern for the desired filenames
     all_ps_pattern = r"^.+\d+(W|w).*(?!300.*)\.(jpg|jpeg|JPG|JPEG|png|PNG)$"
     cutted_pattern = r"^.+\d+(W|w).*(-\d+x\d+)\.(jpg|jpeg|JPG|JPEG|png|PNG)$"
-
-    # Ensure the destination folder exists
-    # if not os.path.exists(destination_folder):
-    #     os.makedirs(destination_folder)
 
     # Compile the regular expression for matching filenames
     all_regex = re.compile(all_ps_pattern)
     cutted_regex = re.compile(cutted_pattern)
 
     # Iterate through files in the source folder
-    for filename in os.listdir(source_folder):
+    for filename in list_jpeg_files(source_folder):
         if all_regex.match(filename):
             all_ps_img.add(filename)
             if cutted_regex.match(filename):
@@ -63,7 +64,7 @@ def copy_matching_images():
     unique_ps_images = all_ps_img - cuted_ps_img
     for filename in unique_ps_images:
         source_path = os.path.join(source_folder, filename)
-        destination_path = os.path.join(destination_folder, filename)
+        destination_path = os.path.join(const.MATENIM_FOLDER, filename)
         filename = str(bytes(filename,'utf-8','backslashreplace'),'utf-8')
         msg = f"Copying: {filename}"
         total.append(msg)
@@ -72,3 +73,8 @@ def copy_matching_images():
         shutil.copy(source_path, destination_path)
         print(f"Copied: {filename}")
     return render_template('public/matenim.html', msg=total)
+
+
+def list_jpeg_files(directory):
+    # List all JPEG files in the given directory
+    return [f for f in os.listdir(directory) if f.lower().endswith(('.jpg', '.jpeg'))]
