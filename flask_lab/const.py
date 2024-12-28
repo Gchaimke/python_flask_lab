@@ -17,7 +17,7 @@ CLIENTS_DB = 'client'
 TICKETS_DB = 'ticket'
 LANGUAGE = 'il'
 
-MATENIM_FOLDER = f'{ROOT_PATH}/static/img/public/products/matenim'
+POWER_SUPPLIES_FOLDER = f'{ROOT_PATH}/static/img/public/products/power_supplies'
 
 LOGGER_CONFIG = {
     "version": 1,

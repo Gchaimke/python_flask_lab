@@ -14,17 +14,17 @@ def index():
     return render_template('public/main.html')
 
 
-@bp.route('/matenim')
-def matenim():
+@bp.route('/power_supplies')
+def power_supplies():
     categories = ['dell', 'hp', 'lenovo', 'asus', 'acer', 'msi', 'apple', 'samsung', 'sony', 'toshiba', 'fujitsu', 'lg',
                   'microsoft', 'xiaomi', 'huawei', 'google']
     categories.sort()
     categories = [category.title() for category in categories]
-    return render_template('public/matenim.html', categories=categories)
+    return render_template('public/power_supplies.html', categories=categories)
 
 
-@bp.route('/matenim/<category>')
-def matenim_category(category):
+@bp.route('/power_supplies/<category>')
+def power_supplies_category(category):
     per_page = 18
     next = None
     not_found = False
@@ -57,7 +57,7 @@ def page_not_found(e):
     return render_template('public/main.html', requested_url=clean_url, last_slash=last_slash)
 
 
-# @bp.route('/matenim/copy')
+# @bp.route('/power_supplies/copy')
 def copy_matching_images():
     import re
     import shutil
@@ -86,7 +86,7 @@ def copy_matching_images():
     unique_ps_images = all_ps_img - cuted_ps_img
     for filename in unique_ps_images:
         source_path = os.path.join(source_folder, filename)
-        destination_path = os.path.join(const.MATENIM_FOLDER, filename.lower())
+        destination_path = os.path.join(const.POWER_SUPPLIES_FOLDER, filename.lower())
         filename = str(bytes(filename,'utf-8','backslashreplace'),'utf-8')
         msg = f"Copying: {filename}"
         total.append(msg)
@@ -94,14 +94,14 @@ def copy_matching_images():
         # Copy the file
         shutil.copy(source_path, destination_path)
         print(f"Copied: {filename}")
-    return render_template('public/matenim.html', msg=total)
+    return render_template('public/power_supplies.html', msg=total)
 
 
 def chunk_list(lst, size):
     return [lst[i:i + size] for i in range(0, len(lst), size)]
 
 def get_category(category):
-    for filename in (f for f in os.listdir(const.MATENIM_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
+    for filename in (f for f in os.listdir(const.POWER_SUPPLIES_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
         if category.lower() in filename.lower():
             clean_file_name = filename.removesuffix('.jpg').replace('_', ' ').replace('-', ' ').title()
             yield clean_file_name, filename

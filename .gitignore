@@ -22,4 +22,4 @@ instance/config.py
 .vscode/settings.json
 virtualenv.pyz
 wp-content/
-flask_lab/static/img/public/products/matenim
+flask_lab/static/img/public/products/power_supplies
