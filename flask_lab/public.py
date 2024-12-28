@@ -10,6 +10,7 @@ from .auth import min_role_required
 from .db import init_db, insert_to_db, update_by_id, delete_by_id, get_by_id, get_join
 from . import const
 
+unique_not_found_urls = set()
 bp = Blueprint('pablic', __name__)
 
 @bp.route('/')
@@ -21,7 +22,9 @@ def index():
 @bp.app_errorhandler(404)
 def page_not_found(e):
     # Log the requested URL (optional)
-    print(f"404 error: {request.url} {e}")
+    if not request.url in unique_not_found_urls:
+        print(f"NOT FOUND: {request.url}")
+    unique_not_found_urls.add(request.url)
     clean_url = unquote(request.path)
     if last_slash := clean_url.split('/'):
         last_slash = last_slash[-1]
