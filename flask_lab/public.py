@@ -64,14 +64,10 @@ def copy_matching_images():
     for filename in unique_ps_images:
         source_path = os.path.join(source_folder, filename)
         destination_path = os.path.join(destination_folder, filename)
-        msg = f"Copying: {filename}"
+        msg = f"Copying: {unquote(filename)}"
         total.append(msg)
 
     # # Copy the file
     # shutil.copy(source_path, destination_path)
     # print(f"Copied: {filename}")
     return render_template('public/matenim.html', msg=total)
-
-
-
-
