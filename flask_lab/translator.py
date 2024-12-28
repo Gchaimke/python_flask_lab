@@ -25,11 +25,12 @@ class Translator():
     
     def translate(self, text: str, format='') -> str:
         translated_text = []
-        if text.lower() in self.language_dict.keys():
-            if text_data := self.language_dict.get(text.lower()):
-                if format:
-                    text_data = text_data.format(format)
-            return text_data
+        if text_data := self.language_dict.get(text.lower()):
+            if format:
+                text_data = text_data.format(format)
+        else:
+            text_data = text
+        return text_data
 
         if len(text.split(' ')) > 1:
             for word in text.split(' '):

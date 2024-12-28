@@ -6,23 +6,31 @@
 <main class="public">
     {% block content %}
 
-    <main class="index-page">
-
+    <main class="my-5 index-page">
+        <div class="mt-5"></div>
         <div class="container">
             <!-- Section Title -->
             <div class="container section-title" data-aos="fade-up">
-                <h2>{{ lang('about') }}</h2>
-                <p>{{ lang('we are repairing all kind laptops and pcs, from all comapnies. we love to repair apple laptops and gaming computers') }}
-                </p>
+                <h2>{{ lang('power supplies for laptops') }}</h2>
+                <p>{{ lang('We have almost all power supplies for laptops for the best price and with warranty') }}</p>
+                <p>{{ lang('The prices are between 180 and 450 nis') }}</p>
                 {% for m in msg %}
                 <p>{{m}}</p>
                 {% endfor %}
 
-            </div><!-- End Section Title -->
+
+            </div><!-- End Section Not found -->
+            <div class="container section-title" data-aos="fade-up">
+                {% if not_found %}
+                <h3 class="alert alert-primary" role="alert">
+                    {{ lang('we don\'t added this power supply right now in owr site, but you can call us and ask if we have this in stock or we can order for you') }}
+                </h3>
+                {% endif %}
+            </div><!-- End Section Not found -->
 
             <div class="row">
                 {% for product, pic in products %}
-                <div class="col-md-4">
+                <div class="col-md-4" data-aos="fade-up">
                     <div class="card mb-4 box-shadow">
                         <img class="card-img-top"
                             data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text=Thumbnail"
@@ -44,6 +52,21 @@
                 </div>
                 {% endfor %}
             </div>
+            {% if total_pages > 1 %}
+            <nav aria-label="Page navigation example">
+                <ul class="pagination">
+                    {% for n in range(total_pages) %}
+                    <li class="page-item"><a class="page-link" href="?page={{n}}">{{n+1}}</a></li>
+                    {% endfor %}
+                    {% if next %}
+                    <li class="page-item">
+                        <!-- If there is, create a link to the next page -->
+                        <a class="page-link" href="?page={{next}}">Next</a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
         </div>
 
         {% include 'public/contact.html' %}

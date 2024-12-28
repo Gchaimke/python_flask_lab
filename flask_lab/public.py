@@ -25,12 +25,23 @@ def matenim():
 
 @bp.route('/matenim/<category>')
 def matenim_category(category):
-    products = []
-    for filename in (f for f in os.listdir(const.MATENIM_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
-        if category.lower() in filename.lower():
-            clean_file_name = filename.removesuffix('.jpg').replace('_', ' ').replace('-', ' ').title()
-            products.append((clean_file_name, filename))
-    return render_template('public/category.html', products=products)
+    per_page = 18
+    next = None
+    not_found = False
+    page = request.args.get('page', 0, type=int)  # Default to page 1 if not specified
+    if not (products := list(get_category(category))):
+        products = list(get_category('19'))
+        not_found = True
+    products.sort()
+    if chunked := chunk_list(products, per_page):
+        if page + 1 < len(chunked):
+            next = page + 1
+        if page > len(chunked) - 1:
+            page = len(chunked) - 1
+        current_page = chunked[page]
+    else:
+        current_page = products
+    return render_template('public/category.html', products=current_page, next=next, total_pages=len(chunked), not_found=not_found)
 
 # Catch-all route for non-existing pages
 @bp.app_errorhandler(404)
@@ -46,7 +57,7 @@ def page_not_found(e):
     return render_template('public/main.html', requested_url=clean_url, last_slash=last_slash)
 
 
-@bp.route('/matenim/copy')
+# @bp.route('/matenim/copy')
 def copy_matching_images():
     import re
     import shutil
@@ -86,6 +97,12 @@ def copy_matching_images():
     return render_template('public/matenim.html', msg=total)
 
 
-def list_jpeg_files(directory):
-    # List all JPEG files in the given directory
-    return [f for f in os.listdir(directory) if f.lower().endswith(('.jpg', '.jpeg'))]
+def chunk_list(lst, size):
+    return [lst[i:i + size] for i in range(0, len(lst), size)]
+
+def get_category(category):
+    for filename in (f for f in os.listdir(const.MATENIM_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
+        if category.lower() in filename.lower():
+            clean_file_name = filename.removesuffix('.jpg').replace('_', ' ').replace('-', ' ').title()
+            yield clean_file_name, filename
+        
