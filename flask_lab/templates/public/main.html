@@ -289,7 +289,9 @@
         <div class="container">
             <h3 class="sitename">MC88</h3>
             <p>{{ lang('the lab service in tel aviv') }}</p>
+            {% if last_slash %}
             <p>{{ lang('you searched for') }} <a href="{{requested_url}}"> {{last_slash}} </a>{{lang('we will work to add the relevant data')}}</p>
+            {% endif %}
             <!-- <div class="social-links d-flex justify-content-center">
                 <a href=""><i class="bi bi-twitter-x"></i></a>
                 <a href=""><i class="bi bi-facebook"></i></a>
