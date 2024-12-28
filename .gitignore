@@ -21,3 +21,4 @@ instance/db.sqlite
 instance/config.py
 .vscode/settings.json
 virtualenv.pyz
+wp-content/
