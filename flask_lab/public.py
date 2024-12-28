@@ -68,7 +68,7 @@ def copy_matching_images():
         msg = f"Copying: {filename}"
         total.append(msg)
 
-    # # Copy the file
-    # shutil.copy(source_path, destination_path)
-    # print(f"Copied: {filename}")
+        # Copy the file
+        shutil.copy(source_path, destination_path)
+        print(f"Copied: {filename}")
     return render_template('public/matenim.html', msg=total)
