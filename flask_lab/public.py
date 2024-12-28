@@ -41,7 +41,7 @@ def copy_matching_images():
     destination_folder = f'{const.ROOT_PATH}/static/img/public/products/matenim'
 
     # Define the pattern for the desired filenames
-    pattern = r"^.+-\d+\.\d+(V|v)-\d+\.\d+(A|a)-\d+(W|w)(-|_)?(1|2|3)?.(jpg|jpeg|JPG|JPEG|png|PNG)$"
+    pattern = r"^.+-\d+(\.\d+)?(V|v)-\d*(\.\d+)?(A|a)-\d+(W|w)(-|_)?(1|2|3)?\.(jpg|jpeg|JPG|JPEG|png|PNG)$"
 
     # Ensure the destination folder exists
     # if not os.path.exists(destination_folder):
