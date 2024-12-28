@@ -95,7 +95,7 @@
    */
   function aosInit () {
     AOS.init({
-      duration: 6000,
+      duration: 600,
       easing: 'ease-in-out',
       once: true,
       mirror: false
@@ -116,7 +116,7 @@
             top: section.offsetTop - parseInt(scrollMarginTop),
             behavior: 'smooth'
           })
-        }, 5000)
+        }, 100)
       }
     }
   })
