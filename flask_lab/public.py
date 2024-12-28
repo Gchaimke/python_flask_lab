@@ -42,7 +42,7 @@ def copy_matching_images():
     destination_folder = f'{const.ROOT_PATH}/static/img/public/products/matenim'
 
     # Define the pattern for the desired filenames
-    all_ps_pattern = r"^.+\d+(W|w).*(?!300w)\.(jpg|jpeg|JPG|JPEG|png|PNG)$"
+    all_ps_pattern = r"^.+\d+(W|w).*(?!300.*)\.(jpg|jpeg|JPG|JPEG|png|PNG)$"
     cutted_pattern = r"^.+\d+(W|w).*(-\d+x\d+)\.(jpg|jpeg|JPG|JPEG|png|PNG)$"
 
     # Ensure the destination folder exists
