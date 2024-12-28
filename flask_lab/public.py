@@ -46,6 +46,7 @@ def page_not_found(e):
     return render_template('public/main.html', requested_url=clean_url, last_slash=last_slash)
 
 
+@bp.route('/matenim/copy')
 def copy_matching_images():
     import re
     import shutil
@@ -74,7 +75,7 @@ def copy_matching_images():
     unique_ps_images = all_ps_img - cuted_ps_img
     for filename in unique_ps_images:
         source_path = os.path.join(source_folder, filename)
-        destination_path = os.path.join(const.MATENIM_FOLDER, filename)
+        destination_path = os.path.join(const.MATENIM_FOLDER, filename.lower())
         filename = str(bytes(filename,'utf-8','backslashreplace'),'utf-8')
         msg = f"Copying: {filename}"
         total.append(msg)
