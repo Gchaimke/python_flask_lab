@@ -65,7 +65,7 @@ def copy_matching_images():
     cutted_regex = re.compile(cutted_pattern)
 
     # Iterate through files in the source folder
-    images = [f for f in os.listdir(source_folder) if f.lower().endswith(('.jpg', '.jpeg'))]
+    images = [f for f in os.listdir(source_folder)]
     for filename in images:
         if all_regex.match(filename):
             all_ps_img.add(filename)
