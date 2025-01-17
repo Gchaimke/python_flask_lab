@@ -186,28 +186,3 @@ def delete_by_id(table_name: str = TICKETS_DB, id: int = 0):
     db = get_db()
     db.execute(f'DELETE FROM {table_name} WHERE id = ?', (id,))
     db.commit()
-
-
-def add_db():
-    db = get_db()
-    db.execute('''
-        CREATE TABLE IF NOT EXISTS product (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name VARCHAR DEFAULT '',
-            created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-            image TEXT DEFAULT '',
-            description TEXT DEFAULT '',
-            short_description TEXT DEFAULT '',
-            price REAL DEFAULT 0.0,
-            status INTEGER DEFAULT 0,
-            priority INTEGER DEFAULT 0
-        )
-    ''')
-    db.commit()
-    product = {
-        'name': 'Product 1',
-        'description': 'Product 1 description',
-        'price': 100.0,
-        'status': 1,
-    }
-    insert_to_db('product', product)

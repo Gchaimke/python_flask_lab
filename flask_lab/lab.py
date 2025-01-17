@@ -6,7 +6,7 @@ from flask import (
 from werkzeug.exceptions import abort
 
 from .auth import min_role_required
-from .db import add_db, init_db, insert_to_db, update_by_id, delete_by_id, get_by_id, get_join
+from .db import init_db, insert_to_db, update_by_id, delete_by_id, get_by_id, get_join
 from . import const
 
 bp = Blueprint('lab', __name__, url_prefix='/lab')
@@ -38,7 +38,6 @@ def init():
 @bp.route('/')
 @min_role_required(min_role_to='view_board')
 def index():
-    add_db()
     settings = get_by_id(table_name=const.SETTINGS_DB, id=1)
     refresh = settings['refresh'] or 60
     tickets = get_join(
