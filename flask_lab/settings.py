@@ -4,7 +4,7 @@ from flask import (
 from .const import LANGUAGE, PRODUCTS_DB, SETTINGS_DB, USERS_DB
 
 from .auth import min_role_required
-from .db import add_column, add_db, update_by_id, get_by_id
+from .db import add_column, add_db, add_products_from_images, update_by_id, get_by_id
 
 bp = Blueprint('settings', __name__)
 
@@ -37,8 +37,8 @@ def index():
 @bp.route('/update_db', methods=('GET', 'POST'))
 @min_role_required(min_role_to='manage_settings')
 def update_db():
-    add_db()
-    column = 'brand'
-    if add_column(PRODUCTS_DB, column, column_type='integer', null='NOT NULL', default=1):
-        return f"{column=} is added."
-    return f"Error adding {column=}, this column exists."
+    message = add_products_from_images() or ''
+    # column = 'brand'
+    # if add_column(PRODUCTS_DB, column, column_type='integer', null='NOT NULL', default=1):
+    #     message += f"{message}\n{column=} is added."
+    return f"{message}"

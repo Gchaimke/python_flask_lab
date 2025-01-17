@@ -1,10 +1,12 @@
 import os
 from flask import Flask
+
 from . import db
 from . import auth
 from . import settings
 from . import user
 from . import public
+from . import products
 from . import lab
 from . import customer
 from .translator import lang
@@ -34,6 +36,7 @@ def create_app(test_config=None):
     app.register_blueprint(auth.bp)
     app.register_blueprint(settings.bp)
     app.register_blueprint(public.bp)
+    app.register_blueprint(products.bp)
     app.register_blueprint(user.bp)
     app.register_blueprint(lab.bp)
     app.register_blueprint(customer.bp)

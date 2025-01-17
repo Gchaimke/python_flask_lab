@@ -1,3 +1,4 @@
+import os
 import sqlite3
 
 import click
@@ -5,7 +6,7 @@ from flask import current_app, g
 from flask.cli import with_appcontext
 from werkzeug.security import generate_password_hash
 
-from .const import BRANDS_DB, CLIENTS_DB, LANGUAGE, PRODUCTS_DB, SETTINGS_DB, TICKETS_DB, USERS_DB
+from .const import BRANDS_DB, CLIENTS_DB, LANGUAGE, POWER_SUPPLIES_FOLDER, PRODUCTS_DB, SETTINGS_DB, TICKETS_DB, USERS_DB
 
 # ALTER TABLE user ADD COLUMN language varchar(5) null default 'en'
 ADD_COLUMN = "ALTER TABLE {table} ADD COLUMN {column} {column_type}{column_type_param} {null} {default}"
@@ -55,7 +56,7 @@ def init_db():
         'pc_login_password': '12345'
     }
     brand = {
-        'name': 'Unknow',
+        'name': 'Unknown',
         'status': 1,
     }
     product = {
@@ -63,7 +64,8 @@ def init_db():
         'description': 'Product 1 description',
         'price': 100.0,
         'status': 1,
-        'brand': 1
+        'brand': 1,
+        'image': 'PSnotebookMC.jpg'
     }
 
     insert_to_db(table_name=SETTINGS_DB, data=setting)
@@ -187,7 +189,9 @@ def get_where(table_name: str, col, val):
 
 def list_all(table_name: str = TICKETS_DB, where: str = ''):
     db = get_db()
-    return db.execute(f"SELECT * FROM {table_name} {where}").fetchall()
+    query = f"SELECT * FROM {table_name} {where}"
+    print(query)
+    return db.execute(query).fetchall()
 
 
 def delete_by_id(table_name: str = TICKETS_DB, id: int = 0):
@@ -211,8 +215,28 @@ def add_db():
     ''')
     db.commit()
     brand = {
-        'name': 'Asus',
+        'name': 'Unknown',
         'status': 1,
     }
     insert_to_db('brand', brand)
     return 'DB brand added.'
+
+def add_products_from_images():
+    
+    db = get_db()
+    db.executescript('''
+        DELETE FROM product;
+        DELETE FROM brand WHERE id != 1;
+    ''')
+    total_added = 0
+    for filename in (f for f in os.listdir(POWER_SUPPLIES_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
+            clean_file_name = filename.removesuffix('.jpg').replace('_', ' ').replace('-', ' ').title()
+            brand_name = clean_file_name.split(' ')[0].lower()
+            price = 450.0 if 'apple' in brand_name else 180.0
+            if brand := get_where(BRANDS_DB, 'name', brand_name.title()):
+                brand_id = brand['id']
+            else:
+                brand_id = insert_to_db('brand', {'name': brand_name.title(), 'status': 1})
+            insert_to_db('product', {'name': clean_file_name, 'image': f'products/power_supplies/{filename}', 'status': 1, 'brand': brand_id, 'price': price})
+            total_added += 1
+    return f'{total_added=} products.'
