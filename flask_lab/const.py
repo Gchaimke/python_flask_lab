@@ -15,6 +15,7 @@ SETTINGS_DB = 'settings'
 USERS_DB = 'user'
 CLIENTS_DB = 'client'
 TICKETS_DB = 'ticket'
+PRODUCTS_DB = 'product'
 LANGUAGE = 'il'
 
 POWER_SUPPLIES_FOLDER = f'{ROOT_PATH}/static/img/public/products/power_supplies'

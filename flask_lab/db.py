@@ -5,7 +5,7 @@ from flask import current_app, g
 from flask.cli import with_appcontext
 from werkzeug.security import generate_password_hash
 
-from .const import CLIENTS_DB, LANGUAGE, SETTINGS_DB, TICKETS_DB, USERS_DB
+from .const import CLIENTS_DB, LANGUAGE, PRODUCTS_DB, SETTINGS_DB, TICKETS_DB, USERS_DB
 
 # ALTER TABLE user ADD COLUMN language varchar(5) null default 'en'
 ADD_COLUMN = "ALTER TABLE {table} ADD COLUMN {column} {column_type}{column_type_param} {null} {default}"
@@ -54,10 +54,17 @@ def init_db():
         'client_id': '0541234123',
         'pc_login_password': '12345'
     }
+    product = {
+        'name': 'Product 1',
+        'description': 'Product 1 description',
+        'price': 100.0,
+        'status': 1,
+    }
     insert_to_db(table_name=SETTINGS_DB, data=setting)
     insert_to_db(table_name=USERS_DB, data=user)
     insert_to_db(table_name=CLIENTS_DB, data=client)
     insert_to_db(table_name=TICKETS_DB, data=demo_ticket)
+    insert_to_db(table_name=PRODUCTS_DB, data=product)
     return '<h1>App init Success!</h1><p> Use user:admin password:admin <a href="/auth/login">Login</a></p>'
 
 
@@ -68,9 +75,11 @@ def init_db_command(force):
     """Clear the existing data and create new tables."""
     if not get_columns(USERS_DB) or force:
         init_db()
-        click.echo('Clear the existing data and create new tables. login with admin:admin in http://localhost:5000/auth/login')
+        click.echo(
+            'Clear the existing data and create new tables. login with admin:admin in http://localhost:5000/auth/login')
     else:
-        click.echo('Table "users" exists, please use "python -m flask init-db --force" parameter to clean start.')
+        click.echo(
+            'Table "users" exists, please use "python -m flask init-db --force" parameter to clean start.')
 
 
 def init_app(app):
@@ -120,7 +129,7 @@ def insert_to_db(table_name: str, data: dict = None):
         return f"User {data.get('username','')} is already registered."
 
 
-def update_by_id(table_name: str, id: str = None, data: dict = None, id_key = 'id'):
+def update_by_id(table_name: str, id: str = None, data: dict = None, id_key='id'):
     if not id:
         return False
     try:
@@ -137,7 +146,8 @@ def update_by_id(table_name: str, id: str = None, data: dict = None, id_key = 'i
     except db.IntegrityError:
         return False
 
-def get_by_id(table_name: str, id, join_with: str = None, join_fields=('id', 'id'), id_key = 'id'):
+
+def get_by_id(table_name: str, id, join_with: str = None, join_fields=('id', 'id'), id_key='id'):
     db = get_db()
     if not get_columns(USERS_DB):
         init_db()
@@ -176,3 +186,28 @@ def delete_by_id(table_name: str = TICKETS_DB, id: int = 0):
     db = get_db()
     db.execute(f'DELETE FROM {table_name} WHERE id = ?', (id,))
     db.commit()
+
+
+def add_db():
+    db = get_db()
+    db.execute('''
+        CREATE TABLE IF NOT EXISTS product (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name VARCHAR DEFAULT '',
+            created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            image TEXT DEFAULT '',
+            description TEXT DEFAULT '',
+            short_description TEXT DEFAULT '',
+            price REAL DEFAULT 0.0,
+            status INTEGER DEFAULT 0,
+            priority INTEGER DEFAULT 0
+        )
+    ''')
+    db.commit()
+    product = {
+        'name': 'Product 1',
+        'description': 'Product 1 description',
+        'price': 100.0,
+        'status': 1,
+    }
+    insert_to_db('product', product)
