@@ -3,6 +3,7 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS client;
 DROP TABLE IF EXISTS ticket;
 DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS brand;
 
 CREATE TABLE settings (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -67,14 +68,25 @@ CREATE TABLE ticket (
   FOREIGN KEY (client_id) REFERENCES client (phone)
 );
 
-
 CREATE TABLE product (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   name VARCHAR DEFAULT '',
+  brand INTEGER NOT NULL,
   created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   description TEXT DEFAULT '',
   short_description TEXT DEFAULT '',
   price REAL DEFAULT 0.0,
   status INTEGER DEFAULT 0,
   priority INTEGER DEFAULT 0,
+  FOREIGN KEY (brand) REFERENCES brand (id)
+);
+
+CREATE TABLE brand (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            created TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            name VARCHAR DEFAULT '',
+            image TEXT DEFAULT '',
+            description TEXT DEFAULT '',
+            status INTEGER DEFAULT 0,
+            priority INTEGER DEFAULT 0
 );

@@ -1,10 +1,10 @@
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, session
 )
-from .const import LANGUAGE, SETTINGS_DB, USERS_DB
+from .const import LANGUAGE, PRODUCTS_DB, SETTINGS_DB, USERS_DB
 
 from .auth import min_role_required
-from .db import add_column, update_by_id, get_by_id
+from .db import add_column, add_db, update_by_id, get_by_id
 
 bp = Blueprint('settings', __name__)
 
@@ -37,7 +37,8 @@ def index():
 @bp.route('/update_db', methods=('GET', 'POST'))
 @min_role_required(min_role_to='manage_settings')
 def update_db():
-    column = 'language'
-    if add_column(USERS_DB, column, default=LANGUAGE):
+    add_db()
+    column = 'brand'
+    if add_column(PRODUCTS_DB, column, column_type='integer', null='NOT NULL', default=1):
         return f"{column=} is added."
     return f"Error adding {column=}, this column exists."
