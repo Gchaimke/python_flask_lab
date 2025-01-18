@@ -37,9 +37,9 @@
 
             <div class="row">
                 {% for product in products %}
-                <div class="col-md-4" data-aos="fade-up">
+                <div class="col-md-4 {{'not_active' if product['status'] == 0}}" data-aos="fade-up">
                     <div class="card product-card mb-4 box-shadow">
-                        <a href="{{ url_for('products.product', product_id=product['id']) }}" class="{{'not_active' if product['status'] == 0}}">
+                        <a href="{{ url_for('products.product', product_id=product['id']) }}">
                             <img class="card-img-top"
                                 data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text={{product['name']}}"
                                 alt="{{product['name']}}"
