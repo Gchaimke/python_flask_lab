@@ -1,4 +1,6 @@
+from logging.config import dictConfig
 import os
+from pathlib import Path
 from flask import Flask
 
 
@@ -13,9 +15,41 @@ from . import lab
 from . import customer
 from .translator import lang
 
+
 def create_app(test_config=None):
+    log_folder = Path(__file__).resolve().parent / 'logs'
+    log_folder.mkdir(parents=True, exist_ok=True)
+    log_file = log_folder / 'app.log'
+
+    dictConfig(
+        {
+            "version": 1,
+            "formatters": {
+                "default": {
+                    "format": "[%(asctime)s] %(levelname)s in %(module)s: %(message)s",
+                    "datefmt": "%B %d, %Y %H:%M:%S %Z",
+                }
+            },
+            "handlers": {
+                "console": {
+                    "class": "logging.StreamHandler",
+                    "stream": "ext://sys.stdout",
+                    "formatter": "default",
+                },
+                "size-rotate": {
+                    "class": "logging.handlers.RotatingFileHandler",
+                    "filename": str(log_file),
+                    "maxBytes": 1000000,
+                    "backupCount": 5,
+                    "formatter": "default",
+                }
+            },
+            "root": {"level": "DEBUG", "handlers": ["console", "size-rotate"]},
+        }
+    )
     # create and configure the app
-    app = Flask('flask_lab', instance_relative_config=True, template_folder='templates')
+    app = Flask('flask_lab', instance_relative_config=True,
+                template_folder='templates')
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'db.sqlite'),

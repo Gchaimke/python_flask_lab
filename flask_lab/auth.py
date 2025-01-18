@@ -52,16 +52,15 @@ def login():
     if request.method == 'POST':
         username = str(request.form['username']).lower()[0:10]
         password = request.form['password']
-        error = None
         user = get_where(table_name=USERS_DB, col='username', val=username)
         if user and check_password_hash(user['password'], password):
             session.clear()
             session['user_id'] = user['id']
-            current_app.logger.error(f'User loged in {username}')
+            current_app.logger.info(f'{username=} loged in.')
             return redirect(url_for('lab.index'))
 
         flash('Incorrect password or user not exists!', category='danger')
-        current_app.logger.error(error)
+        current_app.logger.error(f'{request.remote_addr=} | Login Alert {username=} {password=}')
     return render_template('auth/login.html')
 
 

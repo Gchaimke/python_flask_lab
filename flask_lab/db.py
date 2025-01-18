@@ -224,7 +224,6 @@ def get_where(table_name: str, col, val):
 def list_all(table_name: str = TICKETS_DB, where: str = ''):
     db = get_db()
     query = f"SELECT * FROM {table_name} {where}"
-    print(query)
     return db.execute(query).fetchall()
 
 

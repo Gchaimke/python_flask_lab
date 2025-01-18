@@ -14,7 +14,7 @@ games/
 sp/
 test_sp/
 wt/
-flask_lab/logs/
+flask_lab/logs/*.log
 flask_lab/.env
 .vscode/settings.json
 instance/db.sqlite
