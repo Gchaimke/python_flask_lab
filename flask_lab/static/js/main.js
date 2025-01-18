@@ -1,4 +1,3 @@
-
 ;(function () {
   'use strict'
 
@@ -8,6 +7,7 @@
   function toggleScrolled () {
     const selectBody = document.querySelector('body')
     const selectHeader = document.querySelector('#header')
+    if(selectHeader == null) return
     if (
       !selectHeader.classList.contains('scroll-up-sticky') &&
       !selectHeader.classList.contains('sticky-top') &&
@@ -32,7 +32,9 @@
     mobileNavToggleBtn.classList.toggle('bi-list')
     mobileNavToggleBtn.classList.toggle('bi-x')
   }
-  mobileNavToggleBtn.addEventListener('click', mobileNavToogle)
+  if (mobileNavToggleBtn) {
+    mobileNavToggleBtn.addEventListener('click', mobileNavToogle)
+  }
 
   /**
    * Hide mobile nav on same-page/hash links
@@ -79,13 +81,15 @@
         : scrollTop.classList.remove('active')
     }
   }
-  scrollTop.addEventListener('click', e => {
-    e.preventDefault()
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
+  if (scrollTop) {
+    scrollTop.addEventListener('click', e => {
+      e.preventDefault()
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
     })
-  })
+  }
 
   window.addEventListener('load', toggleScrollTop)
   document.addEventListener('scroll', toggleScrollTop)
@@ -94,6 +98,7 @@
    * Animation on scroll function and init
    */
   function aosInit () {
+    if (typeof AOS === 'undefined') return
     AOS.init({
       duration: 600,
       easing: 'ease-in-out',

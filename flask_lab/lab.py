@@ -65,7 +65,7 @@ def create():
     ticket = {'id': 0}
     if request.method == 'POST':
         error = None
-        data = {key: value for key, value in request.form.items() if key in const.TICKET_EDIT_FILEDS}
+        data = {key: value for key, value in request.form.items() if key in const.TICKET_EDIT_FIELDS}
         data.update({'author_id': g.user['id'], 'client_id': request.form['client_id']})
 
         if not request.form['client_id']:
@@ -98,7 +98,7 @@ def update(id):
     if request.method == 'POST':
         error = None
         data = {key: value for key, value in request.form.items(
-        ) if key in const.TICKET_EDIT_FILEDS}
+        ) if key in const.TICKET_EDIT_FIELDS}
         data.update({'author_id': g.user['id']})
         if error is not None:
             flash(error, category='danger')

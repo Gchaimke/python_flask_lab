@@ -886,4 +886,23 @@
     margin-right: 8px;
     color: var(--accent-color);
   }
-  
+
+  .product-card {
+    background-color: #fff;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.product-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.product-price {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #28a745;
+}

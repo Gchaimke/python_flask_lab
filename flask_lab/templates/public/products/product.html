@@ -1,0 +1,71 @@
+{% extends 'public/clean.html' %}
+
+{% block header %}
+{% include 'public/header.html' %}
+{% endblock %}
+<main class="public">
+    {% block content %}
+
+    <main class="my-5 index-page">
+        <div class="mt-5"></div>
+        <div class="container">
+            <!-- Section Title -->
+            <div class="container section-title" data-aos="fade-up">
+                <h2>{{ lang('power supplies for laptops') }}</h2>
+                <p>{{ lang('the price include vat') }}</p>
+                <p class="text-danger">{{ lang('the site price can be changed and not updated') }}</p>
+                {% for m in msg %}
+                <p>{{m}}</p>
+                {% endfor %}
+
+
+            </div><!-- End Section Not found -->
+            <div class="container section-title" data-aos="fade-up">
+                {% if not_found %}
+                <h3 class="alert alert-primary" role="alert">
+                    {{ lang('we don\'t added this power supply right now in owr site, but you can call us and ask if we have this in stock or we can order for you') }}
+                </h3>
+                {% endif %}
+            </div><!-- End Section Not found -->
+            <div class="row">
+                {% if product %}
+                <div class="row">
+                    <!-- Product Details -->
+                    <div class="col-md-6">
+                        <h1 class="h2 mb-3">{{product['name']}}</h1>
+                        <a class="btn btn-light col-md-6"
+                        href="{{url_for('products.power_supplies_category', category=product['brand']['name'])}}">{{product['brand']['name']}}</a>
+                        {% if product['status'] == 1 %}
+                        <div class="mb-3">
+                            <span class="h4 me-2">{{product['price']}}{{lang('shekel')}}</span>
+                            <span class="text-muted text-decoration-line-through">{{product['price'] + 50}}</span>
+                            <span class="badge bg-danger ms-2">50 {{lang('shekel')}} {{lang('discount')}}</span>
+                            <small class="text-success">{{ lang('in stock') }}</small>
+                        </div>
+                        {% endif %}
+                        <p class="mb-4">{{product['description']}}</p>
+                    </div>
+                    <!-- Product Images -->
+                    <div class="col-md-6 mb-4">
+                        <div class="card">
+                            <img class="card-img-top"
+                                data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text={{product['name']}}"
+                                alt="{{product['name']}}"
+                                src="{{ url_for('static', filename='img/public/'+product['image']) }}"
+                                data-holder-rendered="true">
+
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        {% include 'public/contact.html' %}
+
+    </main>
+
+    {% include 'public/footer.html' %}
+
+    {% endblock %}
+</main>

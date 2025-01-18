@@ -45,7 +45,16 @@ LOGGER_CONFIG = {
     "root": {"level": "DEBUG", "handlers": ["console", "file"]},
 }
 
-TICKET_EDIT_FILEDS = [
+PRODUCT_UPDATE_FIELDS = [
+    'name',
+    'description',
+    'price',
+    'status',
+    'brand',
+    'image'
+]
+
+TICKET_EDIT_FIELDS = [
     'author_id',
     'created',
     'title',

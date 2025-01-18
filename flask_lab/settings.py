@@ -37,7 +37,8 @@ def index():
 @bp.route('/update_db', methods=('GET', 'POST'))
 @min_role_required(min_role_to='manage_settings')
 def update_db():
-    message = add_products_from_images() or ''
+    message = 'Nothing to update'
+    # message = add_products_from_images() or ''
     # column = 'brand'
     # if add_column(PRODUCTS_DB, column, column_type='integer', null='NOT NULL', default=1):
     #     message += f"{message}\n{column=} is added."

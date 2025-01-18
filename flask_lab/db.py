@@ -168,6 +168,23 @@ def get_by_id(table_name: str, id, join_with: str = None, join_fields=('id', 'id
     return db.execute(query, (id, )).fetchone()
 
 
+def get_by_id_as_dict(table_name: str, id, join_with: str = None, join_fields=('id', 'id'), id_key='id'):
+    if row := get_by_id(table_name, id, join_with, join_fields, id_key):
+        return row_to_dict(row, join_with)
+
+
+def row_to_dict(row, join_table_name: str = None):
+    pkeys = row.keys()
+    if join_table_name:
+        sid = pkeys.index('id', 1)
+        sub_keys = dict(zip(pkeys[sid:], row[sid:]))
+        row = dict(zip(pkeys[:sid], row[:sid]))
+        row[join_table_name] = sub_keys
+    else:
+        row = dict(zip(pkeys, [index for index, _ in enumerate(pkeys)]))
+    return row
+
+
 def get_join(a: str, b: str, join_fields=('id', 'id'), where=None):
     db = get_db()
     query = f"SELECT * FROM {a} a " \

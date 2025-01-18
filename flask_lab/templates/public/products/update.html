@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% block title %}{{lang('Edit')}} #{{product['id']}}{% endblock %}
+<h1>
+  {% if product['id'] > 0 %}
+  <a id="delete_message" href="#" class="btn btn-outline-danger">
+    <i class="bi bi-trash"></i>
+  </a>
+  <a target="_blank" class="btn btn-primary"
+    href="{{url_for('products.product', product_id=product['id'])}}">{{lang('View Page')}}</a>
+
+  {% endif %}
+</h1>
+{% endblock %}
+
+{% block content %}
+{% include 'public/products/form.html' %}
+<form id="form_delete" action="{{ url_for('products.delete', product_id=product['id']) }}" method="post">
+</form>
+{% endblock %}

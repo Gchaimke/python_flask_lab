@@ -15,6 +15,10 @@
                 <h2>{{ lang('power supplies for laptops') }}</h2>
                 <p>{{ lang('We have almost all power supplies for laptops for the best price and with warranty') }}</p>
                 <p>{{ lang('The prices are between 180 and 450 nis') }}</p>
+                {% if g.user['id'] %}
+                <a class="btn btn-sm btn-outline-primary" target="_blank"
+                            href="{{ url_for('products.create') }}"><i class="bi bi-plus"></i></a>
+                {% endif %}
                 {% for m in msg %}
                 <p>{{m}}</p>
                 {% endfor %}
@@ -22,11 +26,13 @@
             </div><!-- End Section Title -->
 
             <div class="row">
-                {% for cat in categories %}
+                {% for category in categories %}
                 <div class="col-md-4" data-aos="fade-up">
                     <div class="card mb-4 box-shadow">
                         <div class="card-body">
-                            <p class="card-text"><a class="p-5" href="power_supplies/{{cat}}">{{cat}}</a></p>
+                            <p class="card-text">
+                                <a class="p-5" href="{{url_for('products.power_supplies_category', category=category)}}">{{category}}</a>
+                            </p>
                         </div>
                     </div>
                 </div>
