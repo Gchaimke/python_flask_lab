@@ -1,16 +1,13 @@
-import os
-
-from urllib.parse import unquote
-from flask import Blueprint, render_template, request
-
-from .db import get_where, list_all
-
-from . import const
+from flask import Blueprint, Response, render_template
 
 bp = Blueprint('public', __name__)
-
-unique_not_found_urls = set()
 
 @bp.route('/')
 def index():
     return render_template('public/main.html')
+
+@bp.route('/robots.txt')
+def noindex():
+    r = Response(response="User-Agent: *\nDisallow: *.html\nAllow: /", status=200, mimetype="text/plain")
+    r.headers["Content-Type"] = "text/plain; charset=utf-8"
+    return r

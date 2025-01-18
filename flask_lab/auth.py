@@ -103,7 +103,7 @@ def min_role_required(min_role_to):
                 if g.user:
                     flash(f"You don\'t have permissions for this!", category='danger')
                     return redirect(url_for('lab.index'))
-                return redirect(url_for('public.index'))
+                return redirect(url_for('auth.login'))
 
             return view(**kwargs)
         return wrapped_view

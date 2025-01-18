@@ -1,7 +1,7 @@
 from logging.config import dictConfig
 import os
 from pathlib import Path
-from flask import Flask
+from flask import Flask, Response
 
 
 from . import db
