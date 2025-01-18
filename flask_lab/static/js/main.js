@@ -164,3 +164,18 @@
     })
   }
 })()
+
+/**
+ * Open page with "ctrl+alt+l"
+ */
+document.addEventListener('keydown', function (e) {
+  if (e.ctrlKey && e.altKey && e.key === 'l') {
+    window.location.href = '/lab'
+  }
+})
+document.addEventListener('keydown', function (e) {
+  if (e.ctrlKey && e.altKey && e.key === 'p') {
+    window.location.href = '/products/power_supplies'
+  }
+})
+
