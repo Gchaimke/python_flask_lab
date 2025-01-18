@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block header %}
+{% block title %}{{lang('Edit')}} #{{brand['id']}}{% endblock %}
+<h1>
+  {% if brand['id'] > 0 %}
+  <a id="delete_message" href="#" class="btn btn-outline-danger">
+    <i class="bi bi-trash"></i>
+  </a>
+  {% endif %}
+</h1>
+{% endblock %}
+
+{% block content %}
+{% include 'public/brands/form.html' %}
+<form id="form_delete" action="{{ url_for('brands.delete', brand_id=brand['id']) }}" method="post">
+</form>
+{% endblock %}

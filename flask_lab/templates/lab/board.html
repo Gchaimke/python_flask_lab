@@ -39,9 +39,9 @@ http-equiv="refresh" content="{{ refresh }}"
         <small class="opacity-75 text-nowrap">{{ ticket['created'].strftime('%b.%d %H:%M') }}</small>
         <div class="d-flex">
           {% if g.user['id'] == ticket['author_id'] or g.user['role'] == 2 %}
-          <a class="btn btn-outline-dark mx-2" href="{{ url_for('lab.update', id=ticket['id']) }}">{{ lang('Edit') }}</a>
+          <a class="btn btn-outline-dark mx-2" href="{{ url_for('lab.update', ticket_id=ticket['id']) }}">{{ lang('Edit') }}</a>
           {% endif %}
-          <form action="{{ url_for('lab.done', id=ticket['id']) }}" method="post">
+          <form action="{{ url_for('lab.done', ticket_id=ticket['id']) }}" method="post">
             <button id="done" type="submit" class="btn btn-success">{{ lang('Done') }}</button>
           </form>
         </div>

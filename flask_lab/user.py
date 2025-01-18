@@ -17,10 +17,10 @@ def list():
     return render_template("user/list.html", users=users)
 
 
-@bp.route('/edit/<int:id>', methods=('GET', 'POST'))
+@bp.route('/edit/<int:user_id>', methods=('GET', 'POST'))
 @login_required
-def edit(id):
-    user = get_user(id)
+def edit(user_id):
+    user = get_user(user_id)
     msg = f"User updated!"
     redirect_path = 'lab.index'
     if request.method == 'POST':
@@ -39,12 +39,12 @@ def edit(id):
             msg = f"User {data['username']} updated!"
             redirect_path = 'user.list'
 
-        if update_by_id(table_name=USERS_DB, id=id, data=data):
+        if update_by_id(table_name=USERS_DB, row_id=user_id, data=data):
             flash(msg, category='info')
             return redirect(url_for(redirect_path))
         else:
             flash('Can\t update user data', category='danger')
-    if g.user['id'] == id or g.user['role'] == 2:
+    if g.user['id'] == user_id or g.user['role'] == 2:
         return render_template("user/edit.html", user=user)
     else:
         flash('Pernissions error!', category='danger')
@@ -71,13 +71,12 @@ def create():
     return render_template("user/create.html", user={})
 
 
-@bp.route('/delete/<int:id>', methods=('POST',))
+@bp.route('/delete/<int:user_id>', methods=('POST',))
 @min_role_required(min_role_to='manage_users')
-def delete(id):
-    if g.user['id'] != id:
-        user = get_user(id)
-        delete_by_id(table_name=USERS_DB, id=id)
-        flash(f"User {user['username']} deleted", category='warning')
+def delete(user_id):
+    if g.user['id'] != user_id:
+        user = get_user(user_id)
+        delete_by_id(table_name=USERS_DB, row_id=user_id)
         return redirect(url_for('user.list'))
     else:
         flash(f"You can't delete your self!", category='danger')
@@ -85,7 +84,7 @@ def delete(id):
 
 
 def get_user(id):
-    user = get_by_id(table_name=USERS_DB, id=id)
+    user = get_by_id(table_name=USERS_DB, row_id=id)
     if user is None:
         abort(404, f"User id {id} doesn't exist.")
     return user

@@ -1,7 +1,7 @@
 import sqlite3
 
 import pytest
-from lab.db import get_db
+from flask_lab.db import get_db
 
 
 def test_get_close_db(app):
@@ -21,7 +21,7 @@ def test_init_db_command(runner, monkeypatch):
     def fake_init_db():
         Recorder.called = True
 
-    monkeypatch.setattr('app.db.init_db', fake_init_db)
-    result = runner.invoke(args=['init-db'])
-    assert 'Initialized' in result.output
+    monkeypatch.setattr('flask_lab.db.init_db', fake_init_db)
+    result = runner.invoke(args=['init-db', '--force'])
+    assert 'Clear the existing data and create new tables' in result.output
     assert Recorder.called

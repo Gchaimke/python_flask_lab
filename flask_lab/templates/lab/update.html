@@ -11,6 +11,6 @@
 
 {% block content %}
 {% include 'lab/form.html' %}
-<form id="form_delete" action="{{ url_for('lab.delete', id=ticket['id']) }}" method="post">
+<form id="form_delete" action="{{ url_for('lab.delete', ticket_id=ticket['id']) }}" method="post">
 </form>
 {% endblock %}

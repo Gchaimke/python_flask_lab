@@ -21,8 +21,6 @@ def index():
 def power_supplies():
     filter_active = 'WHERE status = 1' if not g.user else ''
     categories = list_all(const.BRANDS_DB, where=filter_active)
-    categories = [category['name'] for category in categories]
-    categories.sort()
     return render_template('public/products/power_supplies.html', categories=categories)
 
 
@@ -51,13 +49,15 @@ def power_supplies_category(category):
 @bp.route('/product/<int:product_id>')
 def product(product_id):
     product = get_by_id_as_dict(const.PRODUCTS_DB, product_id, join_fields=('brand', 'id'), join_with=const.BRANDS_DB)
+    if not product:
+        return redirect(url_for('products.power_supplies'))
     return render_template('public/products/product.html', product=product)
 
 
 @bp.route('/delete/<int:product_id>', methods=['POST'])
 @min_role_required(min_role_to='delete')
 def delete(product_id):
-    product = delete_by_id(const.PRODUCTS_DB, product_id)
+    delete_by_id(const.PRODUCTS_DB, product_id)
     return redirect(url_for('products.power_supplies'))
 
 @bp.route('/create', methods=('GET', 'POST'))
@@ -80,6 +80,8 @@ def create():
 @min_role_required(min_role_to='add')
 def update(product_id):
     product = get_by_id(const.PRODUCTS_DB, product_id)
+    if not product:
+        return redirect(url_for('products.power_supplies'))
     brands = list_all(const.BRANDS_DB, where='WHERE status = 1')
     if request.method == 'POST':
         error = None
@@ -88,7 +90,7 @@ def update(product_id):
         if error is not None:
             flash(error, category='danger')
         else:
-            update_by_id(table_name=const.PRODUCTS_DB, id=product_id, data=data)
+            update_by_id(table_name=const.PRODUCTS_DB, row_id=product_id, data=data)
             flash('Updated', category='info')
             return redirect(url_for('products.product', product_id=product['id']))
     return render_template('public/products/update.html', product=product, brands=brands)

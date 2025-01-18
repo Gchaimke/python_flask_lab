@@ -1,4 +1,4 @@
-from lab import create_app
+from flask_lab import create_app
 
 
 def test_config():

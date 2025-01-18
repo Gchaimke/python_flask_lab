@@ -29,11 +29,11 @@ def edit(id):
         data['email'] = str(request.form['email']).lower()
         data['language'] = request.form['language'] or 'en'
 
-        if update_by_id(table_name=CLIENTS_DB, id=id, data=data):
+        if update_by_id(table_name=CLIENTS_DB, row_id=id, data=data):
             if customer['phone'] != request.form['phone']:
                 update_by_id(
                     table_name=TICKETS_DB,
-                    id=customer['phone'],
+                    row_id=customer['phone'],
                     data={'client_id': request.form['phone']},
                     id_key='client_id')
             flash(msg, category='info')
@@ -61,7 +61,7 @@ def create():
             flash(f"customer {data['name']} creted!", category='warning')
             return redirect(url_for('customer.edit', id=id))
         else:
-            if customer := get_by_id(table_name=CLIENTS_DB, id=data['phone'], id_key='phone'):
+            if customer := get_by_id(table_name=CLIENTS_DB, row_id=data['phone'], id_key='phone'):
                 return redirect(url_for('customer.edit', id=customer['id']))
             flash('Can\'t insert customer data', category='danger')
     return render_template("customer/create.html", customer={})
@@ -72,8 +72,7 @@ def create():
 def delete(id):
     if g.user['id'] != id:
         customer = get_customer(id)
-        delete_by_id(table_name=CLIENTS_DB, id=id)
-        flash(f"customer {customer['name']} deleted", category='warning')
+        delete_by_id(table_name=CLIENTS_DB, row_id=id)
         return redirect(url_for('customer.list'))
     else:
         flash(f"You can't delete your self!", category='danger')
@@ -81,7 +80,7 @@ def delete(id):
 
 
 def get_customer(id):
-    customer = get_by_id(table_name=CLIENTS_DB, id=id)
+    customer = get_by_id(table_name=CLIENTS_DB, row_id=id)
     if customer is None:
         abort(404, f"customer id {id} doesn't exist.")
     return customer

@@ -1,36 +1,25 @@
 import pytest
-from lab.db import get_db
-
-
-def test_index(client, auth):
-    response = client.get('/')
-    assert b"Log In" in response.data
-    assert b"Register" in response.data
-
-    auth.login()
-    response = client.get('/')
-    assert b'Log Out' in response.data
-    assert b'test title' in response.data
-    assert b'by test on 2018-01-01' in response.data
-    assert b'test\nbody' in response.data
-    assert b'href="/1/update"' in response.data
+from flask_lab.db import get_db
 
 
 @pytest.mark.parametrize('path', (
-    '/create',
-    '/1/update',
-    '/1/delete',
+    '/lab/create',
+    '/lab/1/update',
+    '/lab/1/delete',
 ))
 def test_login_required(client, path):
-    response = client.post(path)
-    assert response.headers["Location"] == "/auth/login"
+    if 'delete' in path:
+        response = client.post(path)
+    else:
+        response = client.get(path)
+    assert response.headers["Location"] == "/"
 
 
 def test_author_required(app, client, auth):
     # change the post author to another user
     with app.app_context():
         db = get_db()
-        db.execute('UPDATE post SET author_id = 2 WHERE id = 1')
+        db.execute('UPDATE ticket SET author_id = 2 WHERE id = 1')
         db.commit()
 
     auth.login()
@@ -56,7 +45,7 @@ def test_create(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        count = db.execute('SELECT COUNT(id) FROM post').fetchone()[0]
+        count = db.execute('SELECT COUNT(id) FROM ticket').fetchone()[0]
         assert count == 2
 
 
@@ -67,8 +56,8 @@ def test_update(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
-        assert post['title'] == 'updated'
+        ticket = db.execute('SELECT * FROM ticket WHERE id = 1').fetchone()
+        assert ticket['title'] == 'updated'
 
 
 @pytest.mark.parametrize('path', (
@@ -87,5 +76,5 @@ def test_delete(client, auth, app):
 
     with app.app_context():
         db = get_db()
-        post = db.execute('SELECT * FROM post WHERE id = 1').fetchone()
-        assert post is None
+        ticket = db.execute('SELECT * FROM ticket WHERE id = 1').fetchone()
+        assert ticket is None

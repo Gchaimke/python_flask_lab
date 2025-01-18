@@ -32,8 +32,8 @@ http-equiv="refresh" content="{{ refresh }}"
     <div class="px- 1">{{lang('Price')}}:{{ticket['price']}}</div>
     <div class="d-flex flex-row">
       {% if g.user['id'] == ticket['author_id'] or g.user['role'] == 2 %}
-      <a class="btn btn-info mx-3" href="{{ url_for('lab.update', id=ticket['id']) }}">{{lang('Edit')}}</a>
-      <form class="mx-3" action="{{ url_for('lab.done', id=ticket['id']) }}" method="post">
+      <a class="btn btn-info mx-3" href="{{ url_for('lab.update', ticket_id=ticket['id']) }}">{{lang('Edit')}}</a>
+      <form class="mx-3" action="{{ url_for('lab.done', ticket_id=ticket['id']) }}" method="post">
         <button id="done" type="submit" class="btn btn-success"
           onclick="confirm('Are you sure?');">{{lang('Done')}}</button>
       </form>

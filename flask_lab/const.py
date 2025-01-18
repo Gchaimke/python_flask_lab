@@ -3,7 +3,7 @@
 import os
 
 APP_NAME = 'Flask Lab'
-APP_VERSION = "1.0.2"
+APP_VERSION = "2.0.0"
 ROOT_PATH, _ = os.path.split(os.path.realpath(__file__))
 STATUS = {0: 'new', 1: 'in progress', 2: 'waiting for customer', 3: 'done', 4: 'cenceled'}
 PC_KIND = {0: 'PC', 1: 'Laptop', 2: 'Tablet', 3: 'All in One'}

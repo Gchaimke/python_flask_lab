@@ -2,8 +2,8 @@ import os
 import tempfile
 
 import pytest
-from lab import create_app
-from lab.db import get_db, init_db
+from flask_lab import create_app
+from flask_lab.db import get_db, init_db
 
 with open(os.path.join(os.path.dirname(__file__), 'data.sql'), 'rb') as f:
     _data_sql = f.read().decode('utf8')

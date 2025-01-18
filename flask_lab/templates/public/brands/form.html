@@ -1,0 +1,31 @@
+<form method="post" class="mb-5">
+  <div class="row">
+    <div class="form-floating col-12 col-md-6 mb-2">
+      <input class="form-control" name="name" id="name" value="{{brand['name']}}" required autocomplete="off">
+      <label class="form-label" for="name">{{lang('Name')}}</label>
+    </div>
+    <div class="form-floating col-12 col-md-2 mb-2">
+      <select class="form-select" name="status" id="status">
+        {% for s in range(0, 2) %}
+        <option value="{{s}}" {% if s==brand['status'] %} selected="selected" {% endif %}>
+          {{lang('Active') if s==1 else lang('Inactive')}}
+        </option>
+        {% endfor %}
+      </select>
+      <label class="form-label" for="status">{{lang('Status')}}</label>
+    </div>
+  </div>
+
+  <div class="form-floating col-12 col-md mb-2">
+    <input class="form-control ltr" name="image" id="image" value="{{brand['image']}}">
+    <label for="image" class="form-label">{{lang('Image')}}</label>
+  </div>
+  <div class="form-floating col-12 col-md mb-2">
+    <textarea name="description" id="description" class="form-control" style="height: 150px;">{{brand['description']}}</textarea>
+    <label for="description" class="form-label">{{lang('Description')}}</label>
+  </div>
+  <div class="d-flex gap-2 w-100 justify-content-between mb-5">
+    <div></div>
+    <button type="submit" class="btn btn-primary">{{lang('Submit')}}</button>
+  </div>
+</form>

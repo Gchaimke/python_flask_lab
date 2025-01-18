@@ -27,16 +27,24 @@
 
             <div class="row">
                 {% for category in categories %}
-                <div class="col-md-4" data-aos="fade-up">
+                <div class="col-md-4 {{'not_active' if category['status'] == 0}}" data-aos="fade-up">
                     <div class="card mb-4 box-shadow">
                         <div class="card-body">
                             <p class="card-text">
-                                <a class="p-5" href="{{url_for('products.power_supplies_category', category=category)}}">{{category}}</a>
+                                <a class="p-5" href="{{url_for('products.power_supplies_category', category=category['name'])}}">{{category['name']}}</a>
+                                {% if g.user['id'] %}
+                                <a class="btn btn-sm btn-outline-primary" target="_blank" href="{{ url_for('brands.update', brand_id=category['id'])}}"><i
+                                    class="bi bi-pencil-square"></i></a>
+                                {% endif %}
                             </p>
                         </div>
                     </div>
                 </div>
                 {% endfor %}
+                <div class="col-md-4" data-aos="fade-up">
+                    <a class="btn btn-sm btn-outline-primary" target="_blank" href="{{ url_for('brands.create') }}"><i
+                            class="bi bi-plus"></i></a>
+                </div>
             </div>
         </div>
 

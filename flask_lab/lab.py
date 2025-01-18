@@ -29,7 +29,7 @@ def set_const():
 @bp.route('/init')
 def init():
     try:
-        get_by_id(table_name=const.USERS_DB, id=1)
+        get_by_id(table_name=const.USERS_DB, row_id=1)
         return 'App init, user exists'
     except OperationalError:
         return init_db()
@@ -38,7 +38,7 @@ def init():
 @bp.route('/')
 @min_role_required(min_role_to='view_board')
 def index():
-    settings = get_by_id(table_name=const.SETTINGS_DB, id=1)
+    settings = get_by_id(table_name=const.SETTINGS_DB, row_id=1)
     refresh = settings['refresh'] or 60
     tickets = get_join(
         a=const.TICKETS_DB,
@@ -50,7 +50,7 @@ def index():
 @bp.route('/board')
 @min_role_required(min_role_to='view_board')
 def index_done():
-    settings = get_by_id(table_name=const.SETTINGS_DB, id=1)
+    settings = get_by_id(table_name=const.SETTINGS_DB, row_id=1)
     refresh = settings['refresh'] or 60
     tickets = get_join(
         a=const.TICKETS_DB,
@@ -74,27 +74,30 @@ def create():
         if error is not None:
             flash(error, category='danger')
         else:
-            id = insert_to_db(table_name=const.TICKETS_DB, data=data)
+            ticket_id = insert_to_db(table_name=const.TICKETS_DB, data=data)
             insert_to_db(table_name=const.CLIENTS_DB, data={
-                         'phone': request.form['client_id'], 'name': request.form['name'], 'last_ticket_id': id})
-            current_app.logger.info(f'Ticket {id=} created.')
-            return redirect(url_for('lab.update', id=id))
+                         'phone': request.form['client_id'], 'name': request.form['name'], 'last_ticket_id': ticket_id})
+            current_app.logger.info(f'Ticket {ticket_id=} created.')
+            return redirect(url_for('lab.update', ticket_id=ticket_id))
 
     return render_template('lab/create.html', ticket=ticket)
 
 
-@bp.route('/<int:id>/done', methods=('GET', 'POST'))
+@bp.route('/done/<int:ticket_id>', methods=('GET', 'POST'))
 @min_role_required(min_role_to='view_board')
-def done(id):
-    update_by_id(table_name=const.TICKETS_DB, id=id, data={'status': 1})
+def done(ticket_id):
+    update_by_id(table_name=const.TICKETS_DB, row_id=ticket_id, data={'status': 1})
     flash('Updated', category='info')
-    return redirect(url_for('index'))
+    return redirect(url_for('lab.index'))
 
 
-@bp.route('/<int:id>/update', methods=('GET', 'POST'))
+@bp.route('/update/<int:ticket_id>', methods=('GET', 'POST'))
 @min_role_required(min_role_to='add')
-def update(id):
-    ticket: sqlite3.Row = get_ticket(id)
+def update(ticket_id):
+    ticket: sqlite3.Row = get_ticket(ticket_id)
+    if not ticket:
+        return redirect(url_for('lab.index'))
+
     if request.method == 'POST':
         error = None
         data = {key: value for key, value in request.form.items(
@@ -103,30 +106,29 @@ def update(id):
         if error is not None:
             flash(error, category='danger')
         else:
-            update_by_id(table_name=const.TICKETS_DB, id=id, data=data)
+            update_by_id(table_name=const.TICKETS_DB, row_id=ticket_id, data=data)
             flash('Updated', category='info')
-            return redirect(url_for('lab.update', id=id))
+            return redirect(url_for('lab.update', ticket_id=ticket_id))
     return render_template('lab/update.html', ticket=ticket)
 
 
-@bp.route('/<int:id>/delete', methods=('POST',))
+@bp.route('/delete/<int:ticket_id>', methods=('POST',))
 @min_role_required(min_role_to='delete')
-def delete(id):
-    get_ticket(id)
-    delete_by_id(table_name=const.TICKETS_DB, id=id)
-    current_app.logger.info(f'Ticket {id=} deleted.')
-    return redirect(url_for('index'))
+def delete(ticket_id):
+    get_ticket(ticket_id)
+    delete_by_id(table_name=const.TICKETS_DB, row_id=ticket_id)
+    return redirect(url_for('lab.index'))
 
 
-def get_ticket(id, check_author=True):
+def get_ticket(ticket_id, check_author=True):
     ticket = get_by_id(
         table_name=const.TICKETS_DB,
-        id=id,
+        row_id=ticket_id,
         join_with=const.CLIENTS_DB,
         join_fields=('client_id', 'phone')
     )
     if ticket is None:
-        abort(404, f"ticket id {id} doesn't exist.")
+        abort(404, f"ticket id {ticket_id} doesn't exist.")
 
     if g.user['role'] > 1:
         return ticket

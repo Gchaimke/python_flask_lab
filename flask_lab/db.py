@@ -133,31 +133,48 @@ def insert_to_db(table_name: str, data: dict = None):
         ).lastrowid
         db.commit()
         if lastrowid > 0:
+            current_app.logger.info(f'{table_name=} {lastrowid=} created!')
             return lastrowid
         return False
     except db.IntegrityError:
         return f"User {data.get('username','')} is already registered."
 
 
-def update_by_id(table_name: str, id: str = None, data: dict = None, id_key='id'):
-    if not id:
+def update_by_id(table_name: str, row_id: str = None, data: dict = None, id_key='id'):
+    if not row_id:
         return False
     try:
         db = get_db()
         fields = ','.join([f'{field} = ?' for field in data.keys()])
         data_values = [i for i in data.values()]
         rowcount = db.execute(
-            f'UPDATE {table_name} SET {fields} WHERE {id_key} = \'{id}\'', data_values
+            f'UPDATE {table_name} SET {fields} WHERE {id_key} = \'{row_id}\'', data_values
         ).rowcount
         db.commit()
         if rowcount > 0:
+            current_app.logger.info(f'{table_name=} {row_id=} updated!')
             return True
         return False
     except db.IntegrityError:
         return False
 
 
-def get_by_id(table_name: str, id, join_with: str = None, join_fields=('id', 'id'), id_key='id'):
+def update_many(table_name: str, where: str, data: dict = None):
+    if not where:
+        return False
+    db = get_db()
+    fields = ','.join([f'{field} = ?' for field in data.keys()])
+    data_values = [i for i in data.values()]
+    rowcount = db.execute(
+        f'UPDATE {table_name} SET {fields} WHERE {where}', data_values).rowcount
+    db.commit()
+    if rowcount > 0:
+        current_app.logger.info(f'{table_name=} {where=} updated!')
+        return True
+    return False
+
+
+def get_by_id(table_name: str, row_id, join_with: str = None, join_fields=('id', 'id'), id_key='id'):
     db = get_db()
     if not get_columns(USERS_DB):
         init_db()
@@ -165,11 +182,11 @@ def get_by_id(table_name: str, id, join_with: str = None, join_fields=('id', 'id
     if join_with:
         query += f" JOIN {join_with} b on a.{join_fields[0]} = b.{join_fields[1]}"
     query += f" WHERE a.{id_key} = ?"
-    return db.execute(query, (id, )).fetchone()
+    return db.execute(query, (row_id, )).fetchone()
 
 
-def get_by_id_as_dict(table_name: str, id, join_with: str = None, join_fields=('id', 'id'), id_key='id'):
-    if row := get_by_id(table_name, id, join_with, join_fields, id_key):
+def get_by_id_as_dict(table_name: str, row_id, join_with: str = None, join_fields=('id', 'id'), id_key='id'):
+    if row := get_by_id(table_name, row_id, join_with, join_fields, id_key):
         return row_to_dict(row, join_with)
 
 
@@ -211,10 +228,11 @@ def list_all(table_name: str = TICKETS_DB, where: str = ''):
     return db.execute(query).fetchall()
 
 
-def delete_by_id(table_name: str = TICKETS_DB, id: int = 0):
+def delete_by_id(table_name: str = TICKETS_DB, row_id: int = 0):
     db = get_db()
-    db.execute(f'DELETE FROM {table_name} WHERE id = ?', (id,))
+    db.execute(f'DELETE FROM {table_name} WHERE id = ?', (row_id,))
     db.commit()
+    current_app.logger.info(f'{table_name=} {row_id=} deleted!')
 
 
 def add_db():
@@ -238,8 +256,9 @@ def add_db():
     insert_to_db('brand', brand)
     return 'DB brand added.'
 
+
 def add_products_from_images():
-    
+
     db = get_db()
     db.executescript('''
         DELETE FROM product;
@@ -247,13 +266,16 @@ def add_products_from_images():
     ''')
     total_added = 0
     for filename in (f for f in os.listdir(POWER_SUPPLIES_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
-            clean_file_name = filename.removesuffix('.jpg').replace('_', ' ').replace('-', ' ').title()
-            brand_name = clean_file_name.split(' ')[0].lower()
-            price = 450.0 if 'apple' in brand_name else 180.0
-            if brand := get_where(BRANDS_DB, 'name', brand_name.title()):
-                brand_id = brand['id']
-            else:
-                brand_id = insert_to_db('brand', {'name': brand_name.title(), 'status': 1})
-            insert_to_db('product', {'name': clean_file_name, 'image': f'products/power_supplies/{filename}', 'status': 1, 'brand': brand_id, 'price': price})
-            total_added += 1
+        clean_file_name = filename.removesuffix(
+            '.jpg').replace('_', ' ').replace('-', ' ').title()
+        brand_name = clean_file_name.split(' ')[0].lower()
+        price = 450.0 if 'apple' in brand_name else 180.0
+        if brand := get_where(BRANDS_DB, 'name', brand_name.title()):
+            brand_id = brand['id']
+        else:
+            brand_id = insert_to_db(
+                'brand', {'name': brand_name.title(), 'status': 1})
+        insert_to_db('product', {'name': clean_file_name, 'image': f'products/power_supplies/{filename}',
+                     'status': 1, 'brand': brand_id, 'price': price})
+        total_added += 1
     return f'{total_added=} products.'

@@ -16,10 +16,11 @@
                 <p>{{ lang('The prices are between 180 and 450 nis') }}</p>
                 <p>{{ lang('the price include vat') }}</p>
                 <p class="text-danger">{{ lang('the site price can be changed and not updated') }}</p>
-                <a class="btn btn-light col-md-6" href="{{url_for('products.power_supplies')}}">{{lang('All brands')}}</a>
+                <a class="btn btn-light col-md-6"
+                    href="{{url_for('products.power_supplies')}}">{{lang('All brands')}}</a>
                 {% if g.user['id'] %}
-                <a class="btn btn-sm btn-outline-primary" target="_blank"
-                            href="{{ url_for('products.create') }}"><i class="bi bi-plus"></i></a>
+                <a class="btn btn-sm btn-outline-primary" target="_blank" href="{{ url_for('products.create') }}"><i
+                        class="bi bi-plus"></i></a>
                 {% endif %}
                 {% for m in msg %}
                 <p>{{m}}</p>
@@ -37,13 +38,14 @@
 
             <div class="row">
                 {% for product in products %}
+                {% set image = product['image'] or 'PSnotebookMC.jpg' %}
                 <div class="col-md-4 {{'not_active' if product['status'] == 0}}" data-aos="fade-up">
                     <div class="card product-card mb-4 box-shadow">
                         <a href="{{ url_for('products.product', product_id=product['id']) }}">
                             <img class="card-img-top"
                                 data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text={{product['name']}}"
                                 alt="{{product['name']}}"
-                                src="{{ url_for('static', filename='img/public/'+product['image']) }}"
+                                src="{{ url_for('static', filename='img/public/'+image) }}"
                                 data-holder-rendered="true">
 
                             <h5 class="card-title product-title">{{product['name']}}</h5>
@@ -55,7 +57,7 @@
                                 </small>
 
                                 {% endif %}
-                                
+
                                 <div>
                                     <s class="px-2 text-danger">{{product['price'] + 50}}</s>
                                     <span class="product-price">{{product['price']}}{{lang('shekel')}}</span>

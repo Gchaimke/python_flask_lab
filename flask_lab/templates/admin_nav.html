@@ -21,7 +21,7 @@
                     <ul class="dropdown-menu">
                         <div class="m-2">{{lang('Hello', format=g.user['view_name'].capitalize())}}! </div>
                         <li><a class="dropdown-item"
-                                href="{{ url_for('user.edit', id=g.user['id']) }}">{{lang('User Settings')}} 
+                                href="{{ url_for('user.edit', user_id=g.user['id']) }}">{{lang('User Settings')}} 
                             </a></li>
                         <li><a class="dropdown-item" href="{{ url_for('auth.logout') }}">{{lang('Log Out')}}</a></li>
                     </ul>

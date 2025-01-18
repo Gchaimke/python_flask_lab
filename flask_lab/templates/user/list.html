@@ -13,8 +13,8 @@
   <li class="list-group-item d-flex justify-content-between align-items-center">
     {{user.username}}
     <div class="d-flex flex-row">
-      <a class="btn btn-info mx-3" href="{{ url_for('user.edit', id=user.id) }}">{{lang('Edit')}}</a>
-      <form class="mx-3" action="{{ url_for('user.delete', id=user.id) }}" method="post">
+      <a class="btn btn-info mx-3" href="{{ url_for('user.edit', user_id=user.id) }}">{{lang('Edit')}}</a>
+      <form class="mx-3" action="{{ url_for('user.delete', user_id=user.id) }}" method="post">
         <button id="delete_message" type="submit" class="btn btn-danger"
           onclick="confirm('Are you sure?');">{{lang('Delete')}}</button>
       </form>

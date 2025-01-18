@@ -14,15 +14,15 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        if not get_by_id(table_name=USERS_DB, id=1):
+        if not get_by_id(table_name=USERS_DB, row_id=1):
             role = 2
         else:
             role = 0
-        username = str(request.form['username']).lower()[0:10]
+        username = str(request.form['username']).lower()[0:20]
         data = {
             'username': username,
-            'view_name': str(request.form['view_name'])[0:20],
-            'email': str(request.form['email']).lower()[0:20],
+            'view_name': str(request.form['view_name'])[0:30],
+            'email': str(request.form['email']).lower()[0:30],
             'role': role,
             'language': LANGUAGE,
             'password': generate_password_hash(request.form['password'])
@@ -54,19 +54,14 @@ def login():
         password = request.form['password']
         error = None
         user = get_where(table_name=USERS_DB, col='username', val=username)
-        if user is None:
-            error = f'Incorrect username. {user}'
-        elif not check_password_hash(user['password'], password):
-            error = 'Incorrect password or user not exists!'
-
-        if error is None:
+        if user and check_password_hash(user['password'], password):
             session.clear()
             session['user_id'] = user['id']
-            current_app.logger.info(f'User loged in {username}')
+            current_app.logger.error(f'User loged in {username}')
             return redirect(url_for('lab.index'))
 
-        flash(error, category='danger')
-
+        flash('Incorrect password or user not exists!', category='danger')
+        current_app.logger.error(error)
     return render_template('auth/login.html')
 
 
@@ -76,7 +71,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = get_by_id(table_name=USERS_DB, id=user_id)
+        g.user = get_by_id(table_name=USERS_DB, row_id=user_id)
 
 
 @bp.route('/logout')
@@ -98,7 +93,7 @@ def min_role_required(min_role_to):
     def decorator(view):
         @functools.wraps(view)
         def wrapped_view(**kwargs):
-            settings = get_by_id(table_name=SETTINGS_DB, id=1)
+            settings = get_by_id(table_name=SETTINGS_DB, row_id=1)
             if g.user and g.user['role'] == 2:
                 return view(**kwargs)
 
@@ -108,7 +103,8 @@ def min_role_required(min_role_to):
             if not g.user or g.user['role'] < settings[f'min_role_to_{min_role_to}']:
                 if g.user:
                     flash(f"You don\'t have permissions for this!", category='danger')
-                return render_template('public/main.html')
+                    return redirect(url_for('lab.index'))
+                return redirect(url_for('public.index'))
 
             return view(**kwargs)
         return wrapped_view
