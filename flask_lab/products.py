@@ -1,7 +1,7 @@
 import os
 
 from urllib.parse import unquote
-from flask import Blueprint, current_app, flash, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, flash, g, redirect, render_template, request, url_for
 
 from .auth import min_role_required
 from .db import delete_by_id, get_by_id, get_by_id_as_dict, get_where, insert_to_db, list_all, update_by_id
@@ -19,7 +19,8 @@ def index():
 
 @bp.route('/power_supplies')
 def power_supplies():
-    categories = list_all(const.BRANDS_DB, where='WHERE status = 1')
+    filter_active = 'WHERE status = 1' if not g.user else ''
+    categories = list_all(const.BRANDS_DB, where=filter_active)
     categories = [category['name'] for category in categories]
     categories.sort()
     return render_template('public/products/power_supplies.html', categories=categories)
@@ -72,7 +73,7 @@ def create():
         else:
             product_id = insert_to_db(table_name=const.PRODUCTS_DB, data=data)
             current_app.logger.info(f'Product {product_id=} created.')
-            return redirect(url_for('products.update', product_id=product_id))
+            return redirect(url_for('products.product', product_id=product_id))
     return render_template('public/products/create.html', product=product, brands=brands)
 
 @bp.route('/update/<int:product_id>', methods=('GET', 'POST'))
@@ -89,7 +90,7 @@ def update(product_id):
         else:
             update_by_id(table_name=const.PRODUCTS_DB, id=product_id, data=data)
             flash('Updated', category='info')
-            return redirect(url_for('products.update', product_id=product['id']))
+            return redirect(url_for('products.product', product_id=product['id']))
     return render_template('public/products/update.html', product=product, brands=brands)
 
 
@@ -154,6 +155,7 @@ def chunk_list(lst, size):
 
 def get_category(category):
     if brand := get_where(const.BRANDS_DB, 'name', category):
-        if cutegory_products := list_all(const.PRODUCTS_DB, where=f"WHERE brand = {brand['id']} AND status = 1"):
+        filter_active = 'AND status = 1' if not g.user else ''
+        if cutegory_products := list_all(const.PRODUCTS_DB, where=f"WHERE brand = {brand['id']} {filter_active}"):
             for product in cutegory_products:
                 yield product

@@ -906,3 +906,7 @@
   font-weight: 700;
   color: #28a745;
 }
+
+.not_active {
+  opacity: 0.3 !important;
+}

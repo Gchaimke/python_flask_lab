@@ -44,6 +44,11 @@
                         </div>
                         {% endif %}
                         <p class="mb-4">{{product['description']}}</p>
+                        {% if g.user['id'] %}
+                        <a class="btn btn-sm btn-outline-primary"
+                            href="{{ url_for('products.update', product_id=product['id']) }}">
+                            <i class="bi bi-pencil-square"></i></a>
+                        {% endif %}
                     </div>
                     <!-- Product Images -->
                     <div class="col-md-6 mb-4">
