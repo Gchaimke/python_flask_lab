@@ -2,6 +2,8 @@ import os
 from pathlib import Path
 from flask import Blueprint, Response, current_app, json, render_template, request
 
+from flask_lab.utils import chunk_list, get_images
+
 from . import const
 from .auth import min_role_required
 
@@ -10,7 +12,8 @@ bp = Blueprint('gallery', __name__, url_prefix='/gallery')
 
 @bp.route('/')
 def index():
-    return Response(response=json.dumps(get_images()), status=200, mimetype='text/plain')
+    page = request.args.get('page', 0, type=int)
+    return Response(response=json.dumps(get_images(page=page)), status=200, mimetype='text/plain')
 
 
 @bp.route('/upload_image', methods=['POST'])
@@ -32,11 +35,3 @@ def upload_from_url():
 def delete_image():
     current_app.logger.info(request.form)
     return Response(response='Delete image', status=200, mimetype='text/plain')
-
-
-def get_images(folder=const.POWER_SUPPLIES_FOLDER, formats=('.jpg', '.jpeg', '.png')):
-    return {
-        file: f'{folder}/{file}'
-        for file in os.listdir(f'{const.PUBLIC_IMAGES_FOLDER}/{folder}') if
-        file.lower().endswith(formats)
-    }

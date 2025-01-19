@@ -180,13 +180,100 @@ document.addEventListener('keydown', function (e) {
 })
 
 //Gallery & Uploader
-function setImage(image_path) {
+function get_gallery_div_image(image) {
+  const galleryContainer = document.createElement('div')
+  galleryContainer.classList.add('col-md-2')
+  galleryContainer.setAttribute('data-aos', 'fade-up')
+
+  const card = document.createElement('div')
+  card.classList.add('card', 'mb-4', 'box-shadow')
+  card.style.cursor = 'pointer'
+
+  const img = document.createElement('img')
+  img.classList.add('card-img-top')
+  img.setAttribute(
+    'data-src',
+    'holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text=name'
+  )
+  img.alt = 'name'
+  img.src = '/static/img/public/'+image[1]
+  img.setAttribute('data-path', image[1])
+  img.setAttribute('data-holder-rendered', 'true')
+  img.onclick = function () {
+    setImage(image[1])
+  }
+
+  const p = document.createElement('p')
+  p.classList.add('card-title')
+  p.textContent = image[0]
+
+  const i = document.createElement('i')
+  i.classList.add('btn', 'bi', 'bi-trash', 'btn-danger')
+  i.onclick = function () {
+    deleteImage(image[1])
+  }
+
+  card.appendChild(img)
+  card.appendChild(p)
+  card.appendChild(i)
+  galleryContainer.appendChild(card)
+
+  return galleryContainer
+}
+
+function generatePageNumbers(totalPages) {
+  const paginationContainer = document.getElementById('pagination')
+  paginationContainer.innerHTML = ''
+
+  for (let i = 1; i <= totalPages; i++) {
+    const pageItem = document.createElement('span')
+    pageItem.classList.add('btn')
+    pageItem.classList.add('btn-primary')
+    pageItem.classList.add('col')
+    pageItem.classList.add('mx-1')
+    pageItem.classList.add('page-item')
+    pageItem.href = '#'
+    pageItem.textContent = i
+    pageItem.addEventListener('click', function (e) {
+      e.preventDefault()
+      loadGalleryPage(i - 1)
+      document.querySelectorAll('.page-item').forEach(item => item.classList.remove('active'))
+      pageItem.classList.add('active')
+    })
+    paginationContainer.appendChild(pageItem)
+  }
+}
+
+function loadGalleryFromJson (url) {
+  fetch(url)
+    .then(response => response.json())
+    .then(data => {
+      const gallery = document.getElementById('gallery-body')
+      gallery.innerHTML = ''
+      data.images.forEach(image => {
+        gallery.appendChild(get_gallery_div_image(image))
+        generatePageNumbers(data.total_pages)
+      })
+    })
+    .catch(error => {
+      console.error('Error loading gallery:', error)
+    })
+}
+
+function loadGalleryPage (page = 0) {
+  const url = '/gallery?page=' + page
+  loadGalleryFromJson(url)
+}
+
+
+function setImage (image_path) {
   document.getElementById('picture_url').value = image_path
-  document.getElementById('product_image').src = '/static/img/public/'+image_path
+  document.getElementById('product_image').src =
+    '/static/img/public/' + image_path
   modal_close('gallery')
 }
 
-function deleteImage(image_path) {
+function deleteImage (image_path) {
   let confim = confirm('Delete this picture?')
   if (confim) {
     fetch('/gallery/delete_image', {

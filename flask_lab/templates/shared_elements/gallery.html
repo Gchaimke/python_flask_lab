@@ -7,23 +7,12 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <div class="row">
-                    {% if images %}
-                    {% for name, path in images.items() %}
-                    <div class="col-md-2" data-aos="fade-up">
-                        <div class="card mb-4 box-shadow" style="cursor: pointer;">
-                            <img class="card-img-top"
-                                data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text={{name}}"
-                                alt="{{name}}" src="{{url_for('static', filename='img/public/'+path)}}" data-holder-rendered="true" onclick="setImage('{{ path }}')">
-                            <p class="card-title">{{name}}</p>
-                            <i class="btn bi bi-trash btn-danger" onclick="deleteImage('{{ path }}')"></i>
-                        </div>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
+                <div class="row" id="gallery-body">
                 </div>
+
             </div>
             <div class="modal-footer">
+                <span class="row" id="pagination"></span>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{{lang("close")}}</button>
             </div>
         </div>

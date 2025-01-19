@@ -4,6 +4,7 @@ from urllib.parse import unquote
 from flask import Blueprint, current_app, flash, g, redirect, render_template, request, url_for
 
 from flask_lab.gallery import get_images
+from flask_lab.utils import chunk_list
 
 from .auth import min_role_required
 from .db import delete_by_id, get_by_id, get_by_id_as_dict, get_where, insert_to_db, list_all, update_by_id
@@ -28,15 +29,15 @@ def power_supplies():
 
 @bp.route('/power_supplies/<category>')
 def power_supplies_category(category):
+    if not (products := list(get_category(category))):
+        products = list(get_category('Unknown'))
+        not_found = True
+
     per_page = 18
     next = None
     not_found = False
     # Default to page 1 if not specified
     page = request.args.get('page', 0, type=int)
-    if not (products := list(get_category(category))):
-        products = list(get_category('Unknown'))
-        not_found = True
-
     if chunked := chunk_list(products, per_page):
         if page + 1 < len(chunked):
             next = page + 1
@@ -50,7 +51,8 @@ def power_supplies_category(category):
 
 @bp.route('/product/<int:product_id>')
 def product(product_id):
-    product = get_by_id_as_dict(const.PRODUCTS_DB, product_id, join_fields=('brand', 'id'), join_with=const.BRANDS_DB)
+    product = get_by_id_as_dict(const.PRODUCTS_DB, product_id, join_fields=(
+        'brand', 'id'), join_with=const.BRANDS_DB)
     if not product:
         return redirect(url_for('products.power_supplies'))
     return render_template('public/products/product.html', product=product)
@@ -62,6 +64,7 @@ def delete(product_id):
     delete_by_id(const.PRODUCTS_DB, product_id)
     return redirect(url_for('products.power_supplies'))
 
+
 @bp.route('/create', methods=('GET', 'POST'))
 @min_role_required(min_role_to='add')
 def create():
@@ -69,7 +72,8 @@ def create():
     brands = list_all(const.BRANDS_DB, where='WHERE status = 1')
     if request.method == 'POST':
         error = None
-        data = {key: value for key, value in request.form.items() if key in const.PRODUCT_UPDATE_FIELDS}
+        data = {key: value for key, value in request.form.items(
+        ) if key in const.PRODUCT_UPDATE_FIELDS}
         if error is not None:
             flash(error, category='danger')
         else:
@@ -78,11 +82,11 @@ def create():
             return redirect(url_for('products.product', product_id=product_id))
     return render_template('public/products/create.html', product=product, brands=brands)
 
+
 @bp.route('/update/<int:product_id>', methods=('GET', 'POST'))
 @min_role_required(min_role_to='add')
 def update(product_id):
     product = get_by_id(const.PRODUCTS_DB, product_id)
-    images = get_images()
     if not product:
         return redirect(url_for('products.power_supplies'))
     brands = list_all(const.BRANDS_DB, where='WHERE status = 1')
@@ -93,10 +97,11 @@ def update(product_id):
         if error is not None:
             flash(error, category='danger')
         else:
-            update_by_id(table_name=const.PRODUCTS_DB, row_id=product_id, data=data)
+            update_by_id(table_name=const.PRODUCTS_DB,
+                         row_id=product_id, data=data)
             flash('Updated', category='info')
             return redirect(url_for('products.product', product_id=product['id']))
-    return render_template('public/products/update.html', product=product, brands=brands, images=images)
+    return render_template('public/products/update.html', product=product, brands=brands)
 
 
 # Catch-all route for non-existing pages
@@ -142,7 +147,8 @@ def copy_matching_images():
     unique_ps_images = all_ps_img - cuted_ps_img
     for filename in unique_ps_images:
         source_path = os.path.join(source_folder, filename)
-        destination_path = os.path.join(const.PUBLIC_IMAGES_FOLDER ,const.POWER_SUPPLIES_FOLDER, filename.lower())
+        destination_path = os.path.join(
+            const.PUBLIC_IMAGES_FOLDER, const.POWER_SUPPLIES_FOLDER, filename.lower())
         filename = str(bytes(filename, 'utf-8', 'backslashreplace'), 'utf-8')
         msg = f"Copying: {filename}"
         total.append(msg)
@@ -151,10 +157,6 @@ def copy_matching_images():
         shutil.copy(source_path, destination_path)
         print(f"Copied: {filename}")
     return render_template('public/products/power_supplies.html', msg=total)
-
-
-def chunk_list(lst, size):
-    return [lst[i:i + size] for i in range(0, len(lst), size)]
 
 
 def get_category(category):
