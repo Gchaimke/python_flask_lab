@@ -191,10 +191,6 @@ function get_gallery_div_image(image) {
 
   const img = document.createElement('img')
   img.classList.add('card-img-top')
-  img.setAttribute(
-    'data-src',
-    'holder.js/100px225?theme=thumb&bg=55595c&fg=eceeef&text='+image[0]
-  )
   img.alt = 'name'
   img.src = '/static/img/public/'+image[1]
   img.setAttribute('data-path', image[1])
