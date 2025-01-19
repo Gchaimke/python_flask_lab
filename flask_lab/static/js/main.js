@@ -7,7 +7,7 @@
   function toggleScrolled () {
     const selectBody = document.querySelector('body')
     const selectHeader = document.querySelector('#header')
-    if(selectHeader == null) return
+    if (selectHeader == null) return
     if (
       !selectHeader.classList.contains('scroll-up-sticky') &&
       !selectHeader.classList.contains('sticky-top') &&
@@ -179,3 +179,108 @@ document.addEventListener('keydown', function (e) {
   }
 })
 
+//Gallery & Uploader
+function setImage(image_path) {
+  document.getElementById('picture_url').value = image_path
+  document.getElementById('product_image').src = '/static/img/public/'+image_path
+  modal_close('gallery')
+}
+
+function deleteImage(image_path) {
+  let confim = confirm('Delete this picture?')
+  if (confim) {
+    fetch('/gallery/delete_image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        image: image_path
+      })
+    })
+      .then(response => response.text())
+      .then(data => {
+        alert(data)
+      })
+      .catch(error => {
+        console.error('Error:', error)
+      })
+    this.parentNode.parentNode.toggle()
+  }
+}
+
+let get_from_url = document.querySelector('.get_from_url')
+if (get_from_url) {
+  get_from_url.addEventListener('click', function () {
+    var name = document.getElementById('upload_image_name').value
+    var url = this.parentElement.querySelector('.upload_image_url').value
+    fetch('/gallery/upload_from_url', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        url: url,
+        name: name
+      })
+    })
+      .then(response => response.text())
+      .then(response => {
+        document.getElementById('picture_url').value = 'products/' + response
+        alert(response + ' uploaded!')
+        modal_close('uploader')
+      })
+      .catch(error => {
+        console.error('Error:', error)
+      })
+  })
+}
+
+let upload_image = document.querySelector('.upload_image')
+if (upload_image) {
+  upload_image.forEach(toggle => {
+    toggle.addEventListener('click', function () {
+      document.getElementById('upload_image_name').value =
+        this.getAttribute('data-name')
+    })
+  })
+}
+
+let upload_btn = document.querySelector('.upload_btn')
+if (upload_btn) {
+  upload_btn.addEventListener('click', function () {
+    var files = document.getElementById('imagefile').files
+    console.log(files)
+    var name = document.getElementById('upload_image_name').value
+    if (files.length > 0 && name != '') {
+      fetch('/gallery/upload_image', {
+        method: 'POST',
+        body: new URLSearchParams({
+          file: files[0],
+          name: name
+        })
+      })
+        .then(response => response.text())
+        .then(response => {
+          if (response != 'Error') {
+            alert(response)
+            document.getElementById('picture_url').value =
+              'products/' + response
+            modal_close('uploader')
+          } else {
+            alert('file not uploaded')
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error)
+        })
+    } else {
+      alert('Please select a file and set name!')
+    }
+  })
+}
+
+function modal_close (modal_id) {
+  let modal = bootstrap.Modal.getInstance(document.getElementById(modal_id))
+  modal.hide()
+}

@@ -3,6 +3,8 @@ import os
 from urllib.parse import unquote
 from flask import Blueprint, current_app, flash, g, redirect, render_template, request, url_for
 
+from flask_lab.gallery import get_images
+
 from .auth import min_role_required
 from .db import delete_by_id, get_by_id, get_by_id_as_dict, get_where, insert_to_db, list_all, update_by_id
 from . import const
@@ -80,6 +82,7 @@ def create():
 @min_role_required(min_role_to='add')
 def update(product_id):
     product = get_by_id(const.PRODUCTS_DB, product_id)
+    images = get_images()
     if not product:
         return redirect(url_for('products.power_supplies'))
     brands = list_all(const.BRANDS_DB, where='WHERE status = 1')
@@ -93,7 +96,7 @@ def update(product_id):
             update_by_id(table_name=const.PRODUCTS_DB, row_id=product_id, data=data)
             flash('Updated', category='info')
             return redirect(url_for('products.product', product_id=product['id']))
-    return render_template('public/products/update.html', product=product, brands=brands)
+    return render_template('public/products/update.html', product=product, brands=brands, images=images)
 
 
 # Catch-all route for non-existing pages
@@ -139,8 +142,7 @@ def copy_matching_images():
     unique_ps_images = all_ps_img - cuted_ps_img
     for filename in unique_ps_images:
         source_path = os.path.join(source_folder, filename)
-        destination_path = os.path.join(
-            const.POWER_SUPPLIES_FOLDER, filename.lower())
+        destination_path = os.path.join(const.PUBLIC_IMAGES_FOLDER ,const.POWER_SUPPLIES_FOLDER, filename.lower())
         filename = str(bytes(filename, 'utf-8', 'backslashreplace'), 'utf-8')
         msg = f"Copying: {filename}"
         total.append(msg)

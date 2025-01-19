@@ -19,7 +19,8 @@ PRODUCTS_DB = 'product'
 BRANDS_DB = 'brand'
 LANGUAGE = 'il'
 
-POWER_SUPPLIES_FOLDER = f'{ROOT_PATH}/static/img/public/products/power_supplies'
+PUBLIC_IMAGES_FOLDER = f'{ROOT_PATH}/static/img/public'
+POWER_SUPPLIES_FOLDER = 'products/power_supplies'
 
 LOGGER_CONFIG = {
     "version": 1,

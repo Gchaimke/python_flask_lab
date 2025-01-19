@@ -6,7 +6,7 @@ from flask import current_app, g
 from flask.cli import with_appcontext
 from werkzeug.security import generate_password_hash
 
-from .const import BRANDS_DB, CLIENTS_DB, LANGUAGE, POWER_SUPPLIES_FOLDER, PRODUCTS_DB, SETTINGS_DB, TICKETS_DB, USERS_DB
+from .const import BRANDS_DB, CLIENTS_DB, POWER_SUPPLIES_FOLDER, PRODUCTS_DB, PUBLIC_IMAGES_FOLDER, SETTINGS_DB, TICKETS_DB, USERS_DB
 
 # ALTER TABLE user ADD COLUMN language varchar(5) null default 'en'
 ADD_COLUMN = "ALTER TABLE {table} ADD COLUMN {column} {column_type}{column_type_param} {null} {default}"
@@ -264,7 +264,7 @@ def add_products_from_images():
         DELETE FROM brand WHERE id != 1;
     ''')
     total_added = 0
-    for filename in (f for f in os.listdir(POWER_SUPPLIES_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
+    for filename in (f for f in os.listdir(PUBLIC_IMAGES_FOLDER/POWER_SUPPLIES_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
         clean_file_name = filename.removesuffix(
             '.jpg').replace('_', ' ').replace('-', ' ').title()
         brand_name = clean_file_name.split(' ')[0].lower()
