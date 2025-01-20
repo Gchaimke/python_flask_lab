@@ -182,7 +182,7 @@ document.addEventListener('keydown', function (e) {
 //Gallery & Uploader
 function get_gallery_div_image (image) {
   const galleryContainer = document.createElement('div')
-  galleryContainer.classList.add('col-md-2')
+  galleryContainer.classList.add('col-md-2', 'col-6')
   galleryContainer.setAttribute('data-aos', 'fade-up')
 
   const card = document.createElement('div')
@@ -223,11 +223,7 @@ function generatePageNumbers (totalPages) {
 
   for (let i = 1; i <= totalPages + 1; i++) {
     const pageItem = document.createElement('span')
-    pageItem.classList.add('btn')
-    pageItem.classList.add('btn-primary')
-    pageItem.classList.add('col')
-    pageItem.classList.add('mx-1')
-    pageItem.classList.add('page-item')
+    pageItem.classList.add('btn', 'btn-primary', 'col', 'mx-1', 'page-item')
     pageItem.href = '#'
     pageItem.textContent = i
     pageItem.addEventListener('click', function (e) {
