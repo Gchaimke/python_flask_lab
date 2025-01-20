@@ -8,6 +8,7 @@ Flask-SQLAlchemy
 sqlalchemy-citext
 sqlalchemy-utils
 wtforms
+requests
 # Editable install with no version control (lab==1.0.0)
 -e .
 # only on ubuntu for production, uncomment line above

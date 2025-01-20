@@ -180,7 +180,7 @@ document.addEventListener('keydown', function (e) {
 })
 
 //Gallery & Uploader
-function get_gallery_div_image(image) {
+function get_gallery_div_image (image) {
   const galleryContainer = document.createElement('div')
   galleryContainer.classList.add('col-md-2')
   galleryContainer.setAttribute('data-aos', 'fade-up')
@@ -192,11 +192,11 @@ function get_gallery_div_image(image) {
   const img = document.createElement('img')
   img.classList.add('card-img-top')
   img.alt = 'name'
-  img.src = '/static/img/public/'+image[1]
+  img.src = '/static/img/public/' + image[1]
   img.setAttribute('data-path', image[1])
   img.setAttribute('data-holder-rendered', 'true')
   img.onclick = function () {
-    setImage(image[1])
+    setImage(image[1], 'gallery')
   }
 
   const p = document.createElement('p')
@@ -217,11 +217,11 @@ function get_gallery_div_image(image) {
   return galleryContainer
 }
 
-function generatePageNumbers(totalPages) {
+function generatePageNumbers (totalPages) {
   const paginationContainer = document.getElementById('pagination')
   paginationContainer.innerHTML = ''
 
-  for (let i = 1; i <= totalPages; i++) {
+  for (let i = 1; i <= totalPages + 1; i++) {
     const pageItem = document.createElement('span')
     pageItem.classList.add('btn')
     pageItem.classList.add('btn-primary')
@@ -233,7 +233,9 @@ function generatePageNumbers(totalPages) {
     pageItem.addEventListener('click', function (e) {
       e.preventDefault()
       loadGalleryPage(i - 1)
-      document.querySelectorAll('.page-item').forEach(item => item.classList.remove('active'))
+      document
+        .querySelectorAll('.page-item')
+        .forEach(item => item.classList.remove('active'))
       pageItem.classList.add('active')
     })
     paginationContainer.appendChild(pageItem)
@@ -261,60 +263,38 @@ function loadGalleryPage (page = 0) {
   loadGalleryFromJson(url)
 }
 
-
-function setImage (image_path) {
+function setImage (image_path, modal_id) {
   document.getElementById('picture_url').value = image_path
   document.getElementById('product_image').src =
     '/static/img/public/' + image_path
-  modal_close('gallery')
-}
-
-function deleteImage (image_path) {
-  let confim = confirm('Delete this picture?')
-  if (confim) {
-    fetch('/gallery/delete_image', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: new URLSearchParams({
-        image: image_path
-      })
-    })
-      .then(response => response.text())
-      .then(data => {
-        alert(data)
-      })
-      .catch(error => {
-        console.error('Error:', error)
-      })
-    this.parentNode.parentNode.toggle()
-  }
+  modal_close(modal_id)
 }
 
 let get_from_url = document.querySelector('.get_from_url')
 if (get_from_url) {
   get_from_url.addEventListener('click', function () {
-    var name = document.getElementById('upload_image_name').value
-    var url = this.parentElement.querySelector('.upload_image_url').value
+    var image_name = document.getElementById('upload_image_name').value
+    var image_url = this.parentElement.querySelector('.upload_image_url').value
     fetch('/gallery/upload_from_url', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded'
       },
       body: new URLSearchParams({
-        url: url,
-        name: name
+        image_url: image_url,
+        image_name: image_name
       })
     })
       .then(response => response.text())
       .then(response => {
-        document.getElementById('picture_url').value = 'products/' + response
-        alert(response + ' uploaded!')
-        modal_close('uploader')
+        if (!response.includes('Error')) {
+          setImage(response, 'uploader')
+        } else {
+          alert(response)
+        }
       })
       .catch(error => {
-        console.error('Error:', error)
+        console.error(error)
       })
   })
 }
@@ -331,39 +311,58 @@ if (upload_image) {
 
 let upload_btn = document.querySelector('.upload_btn')
 if (upload_btn) {
-  upload_btn.addEventListener('click', function () {
-    var files = document.getElementById('imagefile').files
-    console.log(files)
-    var name = document.getElementById('upload_image_name').value
-    if (files.length > 0 && name != '') {
-      fetch('/gallery/upload_image', {
-        method: 'POST',
-        body: new URLSearchParams({
-          file: files[0],
-          name: name
-        })
+  upload_btn.addEventListener('click', function (e) {
+    let formData = new FormData()
+    formData.append('image', document.getElementById('imagefile').files[0])
+    formData.append(
+      'image_name',
+      document.getElementById('upload_image_name').value
+    )
+    fetch('/gallery/upload_image', {
+      method: 'POST',
+      body: formData
+    })
+      .then(response => response.text())
+      .then(response => {
+        if (!response.includes('Error')) {
+          setImage(response, 'uploader')
+        } else {
+          alert(response)
+        }
       })
-        .then(response => response.text())
-        .then(response => {
-          if (response != 'Error') {
-            alert(response)
-            document.getElementById('picture_url').value =
-              'products/' + response
-            modal_close('uploader')
-          } else {
-            alert('file not uploaded')
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error)
-        })
-    } else {
-      alert('Please select a file and set name!')
-    }
+      .catch(error => {
+        console.error(error)
+      })
   })
 }
 
-function modal_close (modal_id) {
+function modal_close(modal_id) {
   let modal = bootstrap.Modal.getInstance(document.getElementById(modal_id))
-  modal.hide()
+  if (modal) {
+    modal.hide()
+  }
+}
+
+function deleteImage(image) {
+  let confim = confirm('Delete this picture?')
+  if (confim) {
+    fetch('/gallery/delete_image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        image: image
+      })
+    })
+      .then(response => response.text())
+      .then(data => {
+        console.log(data)
+        modal_close('gallery')
+      })
+      .catch(error => {
+        console.error('Error:', error)
+      })
+    this.parentNode.parentNode.toggle()
+  }
 }
