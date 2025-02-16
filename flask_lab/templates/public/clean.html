@@ -47,7 +47,7 @@
 
 <body class="text-center {% if g.language == 'il' %}rtl{% endif %}">
   {% for message in get_flashed_messages(with_categories=True) %}
-  <div class="alert alert-{{ message[0] }} messages d-flex gap-2 w-100 justify-content-between">
+  <div class="alert alert-{{ message[0] }} messages d-flex gap-2 w-100 justify-content-between mt-5">
     {{ message[1] }}
     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
   </div>
