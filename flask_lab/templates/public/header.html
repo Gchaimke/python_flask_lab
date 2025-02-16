@@ -9,6 +9,9 @@
       <nav id="navmenu" class="navmenu">
         <ul>
           <li><a href="/#hero" class="active">#</a></li>
+          {% if g.user['id'] %}
+          <li><a class="navbar-brand" href="{{ url_for('lab.index') }}">{{g.app_name}}</a></li>
+        {% endif %}
           <li><a href="/#about">{{ lang('about') }}</a></li>
           <li><a href="/#why-us">{{ lang('why us') }}</a></li>
           <li><a href="/#services">{{ lang('the lab service in tel aviv') }}</a></li>

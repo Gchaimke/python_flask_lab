@@ -16,18 +16,21 @@
                 <p>{{ lang('The prices are between 180 and 450 nis') }}</p>
                 <p>{{ lang('the price include vat') }}</p>
                 <p class="text-danger">{{ lang('the site price can be changed and not updated') }}</p>
-                <a class="btn btn-light col-md-6"
-                    href="{{url_for('products.power_supplies')}}">{{lang('All brands')}}</a>
-                {% if g.user['id'] %}
-                <a class="btn btn-sm btn-outline-primary" target="_blank" href="{{ url_for('products.create') }}"><i
-                        class="bi bi-plus"></i></a>
-                {% endif %}
                 {% for m in msg %}
                 <p>{{m}}</p>
                 {% endfor %}
-
-
             </div><!-- End Section Not found -->
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item">
+                        <a href="{{url_for('products.power_supplies')}}">{{lang('All brands')}}</a></li>
+                    <li class="breadcrumb-item active">{{category}}</li>
+                </ol>
+            </nav>
+            {% if g.user['id'] %}
+            <a class="btn btn-sm btn-outline-primary" target="_blank" href="{{ url_for('products.create') }}"><i
+                    class="bi bi-plus"></i></a>
+            {% endif %}
             <div class="container section-title" data-aos="fade-up">
                 {% if not_found %}
                 <h3 class="alert alert-primary" role="alert">

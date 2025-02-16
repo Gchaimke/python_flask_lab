@@ -46,7 +46,7 @@ def power_supplies_category(category):
         current_page = chunked[page]
     else:
         current_page = products
-    return render_template('public/products/category.html', products=current_page, next=next, total_pages=len(chunked), not_found=not_found)
+    return render_template('public/products/category.html', products=current_page, category=category, next=next, total_pages=len(chunked), not_found=not_found)
 
 
 @bp.route('/product/<int:product_id>')
@@ -68,7 +68,7 @@ def delete(product_id):
 @bp.route('/create', methods=('GET', 'POST'))
 @min_role_required(min_role_to='add')
 def create():
-    product = {'id': 0}
+    product = {'id': 0, 'name': 'new product', 'description': '', 'brand': '', 'image': 'PSnotebookMC.jpg', 'price': 0, 'status': 1}
     brands = list_all(const.BRANDS_DB, where='WHERE status = 1')
     if request.method == 'POST':
         error = None

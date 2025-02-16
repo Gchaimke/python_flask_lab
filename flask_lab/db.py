@@ -121,7 +121,7 @@ def add_column(table, column, column_type='varchar', column_type_param='', null=
             return True
 
 
-def insert_to_db(table_name: str, data: dict = None):
+def insert_to_db(table_name: str, data: dict):
     try:
         db = get_db()
         data_values = [i for i in data.values()]
@@ -132,7 +132,7 @@ def insert_to_db(table_name: str, data: dict = None):
                 *data_values,)
         ).lastrowid
         db.commit()
-        if lastrowid > 0:
+        if lastrowid and lastrowid > 0:
             current_app.logger.info(f'{table_name=} {lastrowid=} created!')
             return lastrowid
         return False
@@ -140,7 +140,7 @@ def insert_to_db(table_name: str, data: dict = None):
         return f"User {data.get('username','')} is already registered."
 
 
-def update_by_id(table_name: str, row_id: str = None, data: dict = None, id_key='id'):
+def update_by_id(table_name: str, row_id: str, data: dict, id_key='id'):
     if not row_id:
         return False
     try:
@@ -159,7 +159,7 @@ def update_by_id(table_name: str, row_id: str = None, data: dict = None, id_key=
         return False
 
 
-def update_many(table_name: str, where: str, data: dict = None):
+def update_many(table_name: str, where: str, data: dict):
     if not where:
         return False
     db = get_db()
@@ -174,7 +174,7 @@ def update_many(table_name: str, where: str, data: dict = None):
     return False
 
 
-def get_by_id(table_name: str, row_id, join_with: str = None, join_fields=('id', 'id'), id_key='id'):
+def get_by_id(table_name: str, row_id, join_with: str = '', join_fields=('id', 'id'), id_key='id'):
     db = get_db()
     if not get_columns(USERS_DB):
         init_db()
@@ -185,12 +185,12 @@ def get_by_id(table_name: str, row_id, join_with: str = None, join_fields=('id',
     return db.execute(query, (row_id, )).fetchone()
 
 
-def get_by_id_as_dict(table_name: str, row_id, join_with: str = None, join_fields=('id', 'id'), id_key='id'):
+def get_by_id_as_dict(table_name: str, row_id, join_with: str = '', join_fields=('id', 'id'), id_key='id'):
     if row := get_by_id(table_name, row_id, join_with, join_fields, id_key):
         return row_to_dict(row, join_with)
 
 
-def row_to_dict(row, join_table_name: str = None):
+def row_to_dict(row, join_table_name: str = ''):
     pkeys = row.keys()
     if join_table_name:
         sid = pkeys.index('id', 1)
@@ -264,7 +264,8 @@ def add_products_from_images():
         DELETE FROM brand WHERE id != 1;
     ''')
     total_added = 0
-    for filename in (f for f in os.listdir(PUBLIC_IMAGES_FOLDER/POWER_SUPPLIES_FOLDER) if f.lower().endswith(('.jpg', '.jpeg'))):
+    for filename in (f for f in os.listdir(os.path.join(PUBLIC_IMAGES_FOLDER, POWER_SUPPLIES_FOLDER)) 
+                     if f.lower().endswith(('.jpg', '.jpeg'))):
         clean_file_name = filename.removesuffix(
             '.jpg').replace('_', ' ').replace('-', ' ').title()
         brand_name = clean_file_name.split(' ')[0].lower()

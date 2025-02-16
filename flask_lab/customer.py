@@ -57,8 +57,8 @@ def create():
         data['phone'] = request.form['phone']
         data['email'] = str(request.form['email']).lower()
         data['language'] = request.form['language'] or 'en'
-        if (id := insert_to_db(table_name=CLIENTS_DB, data=data)) and id.isdigit():
-            flash(f"customer {data['name']} creted!", category='warning')
+        if id := insert_to_db(table_name=CLIENTS_DB, data=data):
+            flash(f"customer {data['name']} created!", category='warning')
             return redirect(url_for('customer.edit', id=id))
         else:
             if customer := get_by_id(table_name=CLIENTS_DB, row_id=data['phone'], id_key='phone'):

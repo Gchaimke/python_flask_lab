@@ -35,14 +35,14 @@ def register():
             error = 'Password is required.'
 
         if error is None:
-            id = insert_to_db(table_name=USERS_DB, data=data)
-            if id > 0:
+            if id := insert_to_db(table_name=USERS_DB, data=data):
                 flash(f'Hello {username}', category='info')
                 session['user_id'] = id
                 current_app.logger.info(f'New user registered {username}')
                 return redirect(url_for("index"))
 
-        flash(error, category='danger')
+        if error:
+            flash(error, category='danger')
 
     return render_template('auth/register.html', user={})
 

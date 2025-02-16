@@ -14,11 +14,18 @@
                 <h2>{{ lang('power supplies for laptops') }}</h2>
                 <p>{{ lang('the price include vat') }}</p>
                 <p class="text-danger">{{ lang('the site price can be changed and not updated') }}</p>
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item">
+                            <a href="{{url_for('products.power_supplies')}}">{{lang('All brands')}}</a></li>
+                        <li class="breadcrumb-item">
+                            <a href="{{url_for('products.power_supplies_category', category=product['brand']['name'])}}">{{product['brand']['name']}}</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">{{ product['name'] }}</li>
+                    </ol>
+                </nav>
                 {% for m in msg %}
                 <p>{{m}}</p>
                 {% endfor %}
-
-
             </div><!-- End Section Not found -->
             <div class="container section-title" data-aos="fade-up">
                 {% if not_found %}
@@ -33,8 +40,6 @@
                     <!-- Product Details -->
                     <div class="col-md-6">
                         <h1 class="h2 mb-3">{{product['name']}}</h1>
-                        <a class="btn btn-light col-md-6"
-                        href="{{url_for('products.power_supplies_category', category=product['brand']['name'])}}">{{product['brand']['name']}}</a>
                         {% if product['status'] == 1 %}
                         <div class="mb-3">
                             <span class="h4 me-2">{{product['price']}}{{lang('shekel')}}</span>
@@ -56,8 +61,7 @@
                             {% set image = product['image'] or 'PSnotebookMC.jpg' %}
                             <img class="card-img-top"
                                 data-src="holder.js/100px225?theme=thumb&amp;bg=55595c&amp;fg=eceeef&amp;text={{product['name']}}"
-                                alt="{{product['name']}}"
-                                src="{{ url_for('static', filename='img/public/'+image) }}"
+                                alt="{{product['name']}}" src="{{ url_for('static', filename='img/public/'+image) }}"
                                 data-holder-rendered="true">
 
                         </div>

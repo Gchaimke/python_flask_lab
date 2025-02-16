@@ -28,7 +28,7 @@ def index():
         if error is not None:
             flash(error, category='danger')
         else:
-            update_by_id(table_name=SETTINGS_DB, row_id=1, data=data)
+            update_by_id(table_name=SETTINGS_DB, row_id='1', data=data)
             flash('Update success!', category='info')
             return redirect(url_for('settings.index'))
     return render_template('settings/edit.html', settings=settings)

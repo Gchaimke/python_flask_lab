@@ -29,7 +29,7 @@ def upload_image():
         return Response(response='Error: Invalid image type', status=400, mimetype='text/plain')
 
     # Save the image
-    image_name = request.form.get('image_name') or image.filename
+    image_name = request.form.get('image_name') or image.filename or 'image.jpg'
     # Determine the file extension based on MIME type
     extension = '.jpg' if image.mimetype == 'image/jpeg' else '.png'
     image_name = f"{Path(image_name).stem}{extension}".lower()
