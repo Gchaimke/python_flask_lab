@@ -55,14 +55,14 @@
                             <p class="card-text">{{product['description']}}</p>
                             <div class="d-flex justify-content-between align-items-center">
                                 {% if product['status'] == 1 %}
-                                <small class="text-success">{{ lang('in stock') }}
-                                    <span class="badge bg-danger ms-2">50 {{lang('shekel')}} {{lang('discount')}}</span>
-                                </small>
-
+                                    <small class="text-success">{{ lang('in stock') }}</small>
+                                    <!-- <span class="badge bg-danger ms-2">50 {{lang('shekel')}} {{lang('discount')}}</span> -->
+                                {% else %}
+                                    <small class="text-danger">{{ lang('not in stock') }}</small>
                                 {% endif %}
 
                                 <div>
-                                    <s class="px-2 text-danger">{{product['price'] + 50}}</s>
+                                    <!-- <s class="px-2 text-danger">{{product['price'] + 50}}</s> -->
                                     <span class="product-price">{{product['price']}}{{lang('shekel')}}</span>
                                 </div>
                             </div>
