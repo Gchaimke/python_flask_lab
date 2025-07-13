@@ -1,8 +1,10 @@
 # python_flask_lab
 
 # simple flask starter project with SQLLite
-# start app from commandline
+# start app from commandline on windows
 .\venv\Scripts\activate
+# on linux
+. /venv/bin/activate
 pip install -r requirements.txt
 
 # use start.sh or start.bat to run flask-lab with debugger

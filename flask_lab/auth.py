@@ -38,7 +38,7 @@ def register():
             if id := insert_to_db(table_name=USERS_DB, data=data):
                 flash(f'Hello {username}', category='info')
                 session['user_id'] = id
-                current_app.logger.info(f'New user registered {username}')
+                current_app.logger.info(f'New user registered {username} from {request.remote_addr}')
                 return redirect(url_for("index"))
 
         if error:
@@ -56,7 +56,7 @@ def login():
         if user and check_password_hash(user['password'], password):
             session.clear()
             session['user_id'] = user['id']
-            current_app.logger.info(f'{username=} loged in.')
+            current_app.logger.info(f'{username=} logged in from {request.remote_addr}.')
             return redirect(url_for('lab.index'))
 
         flash('Incorrect password or user not exists!', category='danger')

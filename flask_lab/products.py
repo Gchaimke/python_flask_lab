@@ -109,7 +109,7 @@ def update(product_id):
 def page_not_found(e):
     # Log the requested URL (optional)
     if not request.url in unique_not_found_urls:
-        current_app.logger.warning(f"NOT FOUND: {request.url}")
+        current_app.logger.warning(f"NOT FOUND: {request.url} from {request.remote_addr=}")
     unique_not_found_urls.add(request.url)
     clean_url = unquote(request.path)
     if last_slash := clean_url.split('/'):
