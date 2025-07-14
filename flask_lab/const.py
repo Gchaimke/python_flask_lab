@@ -19,6 +19,7 @@ PRODUCTS_DB = 'product'
 BRANDS_DB = 'brand'
 LANGUAGE = 'il'
 
+BLOCKED_IPS_FILE = f'{ROOT_PATH}/blocked_ips.txt'
 PUBLIC_IMAGES_FOLDER = f'{ROOT_PATH}/static/img/public'
 POWER_SUPPLIES_FOLDER = 'products/power_supplies'
 

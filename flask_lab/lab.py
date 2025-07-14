@@ -1,5 +1,6 @@
 from sqlite3 import OperationalError
 import sqlite3
+import ipaddress
 from flask import (
     Blueprint, current_app, flash, g, redirect, render_template, request, url_for
 )
@@ -25,6 +26,25 @@ def set_const():
     g.colors = const.COLORS
     g.with_power_supply = {0: 'no', 1: 'yes'}
 
+
+@bp.before_request
+def block_ip_ranges():
+    client_ip = request.remote_addr
+    if client_ip:
+        try:
+            client_ip_obj = ipaddress.ip_address(client_ip)
+            blocked_ips = []
+            with open(const.BLOCKED_IPS_FILE, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        blocked_ips.append(ipaddress.ip_network(line, strict=False))
+            for blocked_range in blocked_ips:
+                if client_ip_obj in blocked_range:
+                    abort(403)  # Forbidden
+        except ValueError:
+            # Handle cases where remote_addr might not be a valid IP
+            pass
 
 @bp.route('/init')
 def init():
