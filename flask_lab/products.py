@@ -1,7 +1,7 @@
 import os
-
+import ipaddress
 from urllib.parse import unquote
-from flask import Blueprint, current_app, flash, g, redirect, render_template, request, url_for
+from flask import Blueprint, current_app, flash, g, redirect, render_template, request, url_for, abort
 
 from flask_lab.gallery import get_images
 from flask_lab.utils import chunk_list
@@ -14,6 +14,29 @@ bp = Blueprint('products', __name__, url_prefix='/products')
 
 unique_not_found_urls = set()
 
+
+@bp.before_request
+def block_ip_ranges():
+    client_ip = request.remote_addr
+    if client_ip:
+        try:
+            client_ip_obj = ipaddress.ip_address(client_ip)
+            blocked_ips = []
+            with open(const.BLOCKED_IPS_FILE, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        if '/' in line:
+                            blocked_ips.append(ipaddress.ip_network(line, strict=False))
+                        else:
+                            blocked_ips.append(ipaddress.ip_address(line))
+            for blocked_range in blocked_ips:
+                if client_ip_obj in blocked_range:
+                    current_app.logger.warning(f"Blocked access from {client_ip}")
+                    abort(403)  # Forbidden
+        except ValueError as e:
+            current_app.logger.error(f"Invalid IP address {client_ip}: {e}")
+            pass
 
 @bp.route('/')
 def index():
