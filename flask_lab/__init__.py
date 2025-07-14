@@ -83,4 +83,6 @@ def create_app(test_config=None):
 
     app.jinja_env.globals.update(lang=lang)
 
+    app.before_request(auth.block_ip_ranges)
+
     return app

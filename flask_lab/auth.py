@@ -1,15 +1,39 @@
 import functools
+import ipaddress
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-from flask import current_app
+from flask import current_app, abort
 from .db import get_by_id, insert_to_db, get_where
-from .const import LANGUAGE, ROLES, SETTINGS_DB, USERS_DB
+from .const import LANGUAGE, ROLES, SETTINGS_DB, USERS_DB, BLOCKED_IPS_FILE
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
+
+@bp.before_request
+def block_ip_ranges():
+    client_ip = request.remote_addr
+    if client_ip:
+        try:
+            client_ip_obj = ipaddress.ip_address(client_ip)
+            blocked_ips = []
+            with open(BLOCKED_IPS_FILE, 'r') as f:
+                for line in f:
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        if '/' in line:
+                            blocked_ips.append(ipaddress.ip_network(line, strict=False))
+                        else:
+                            blocked_ips.append(ipaddress.ip_address(line))
+            for blocked_range in blocked_ips:
+                if client_ip_obj in blocked_range:
+                    current_app.logger.warning(f"Blocked access from {client_ip}")
+                    abort(403)  # Forbidden
+        except ValueError as e:
+            current_app.logger.error(f"Invalid IP address {client_ip}: {e}")
+            pass
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
