@@ -30,7 +30,7 @@ def block_ip_ranges():
             for blocked_range in blocked_ips:
                 if client_ip_obj in blocked_range:
                     current_app.logger.warning(f"Blocked access from {client_ip}")
-                    abort(403)  # Forbidden
+                    abort(500)  # Internal Server Error for blocked IP
         except ValueError as e:
             current_app.logger.error(f"Invalid IP address {client_ip}: {e}")
             pass
