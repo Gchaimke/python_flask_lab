@@ -38,12 +38,15 @@ def block_ip_ranges():
                 for line in f:
                     line = line.strip()
                     if line and not line.startswith('#'):
-                        blocked_ips.append(ipaddress.ip_network(line, strict=False))
+                        if '/' in line:
+                            blocked_ips.append(ipaddress.ip_network(line, strict=False))
+                        else:
+                            blocked_ips.append(ipaddress.ip_address(line))
             for blocked_range in blocked_ips:
                 if client_ip_obj in blocked_range:
                     abort(403)  # Forbidden
-        except ValueError:
-            # Handle cases where remote_addr might not be a valid IP
+        except ValueError as e:
+            current_app.logger.error(f"Invalid IP address {client_ip}: {e}")
             pass
 
 @bp.route('/init')
