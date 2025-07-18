@@ -108,6 +108,8 @@ def test_block_ip_ranges(client, app):
 
 def test_block_php_and_wp_urls(client, app):
     with app.app_context():
+        response = client.get(f'/auth/test.php')
+        assert response.status_code == 200
         response = client.get(f'/auth/test.php', environ_base={'REMOTE_ADDR': '192.168.3.101'})
         assert response.status_code == 500
         wp_phrases = ['wp-admin', 'wp-login', 'wp-json', 'wp-content', 'wp-content']

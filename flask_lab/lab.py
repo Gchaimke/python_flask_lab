@@ -18,7 +18,7 @@ def set_const():
     g.roles = const.ROLES
     g.app_name = const.APP_NAME
     g.app_ver = const.APP_VERSION
-    g.priorities = const.PIORITY
+    g.priorities = const.PRIORITY
     g.status = const.STATUS
     g.language = const.LANGUAGE
     g.pc_manufacturers = const.PC_MANUFACTURERS

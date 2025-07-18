@@ -8,7 +8,7 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from flask import current_app, abort
 from .db import get_by_id, insert_to_db, get_where
-from .const import LANGUAGE, ROLES, SETTINGS_DB, USERS_DB, BLOCKED_IPS_FILE
+from .const import LANGUAGE, SETTINGS_DB, USERS_DB, BLOCKED_IPS_FILE, WHITELIST_IPS_FILE
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -16,20 +16,24 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.before_request
 def block_ip_ranges():
     client_ip = request.remote_addr
-    block_ips = _load_blocked_ips()
+    block_ips = _load_ips(BLOCKED_IPS_FILE)
+    whitelist_ips = _load_ips(WHITELIST_IPS_FILE)
     if client_ip:
+
         # Check if the client IP is in the blocked IP ranges
         try:
             client_ip_obj = ipaddress.ip_address(client_ip)
+            if client_ip_obj in whitelist_ips:
+                return
             for blocked_range in block_ips:
                 if isinstance(blocked_range, ipaddress.IPv4Network) or \
-                    isinstance(blocked_range, ipaddress.IPv6Network):
+                        isinstance(blocked_range, ipaddress.IPv6Network):
                     if client_ip_obj in blocked_range:
                         current_app.logger.warning(
                             f"Blocked access from {client_ip} in range {blocked_range}")
                         abort(500)
                 elif isinstance(blocked_range, ipaddress.IPv4Address) or \
-                     isinstance(blocked_range, ipaddress.IPv6Address):
+                        isinstance(blocked_range, ipaddress.IPv6Address):
                     # If it's a single IP address, check if it matches
                     if client_ip_obj == blocked_range:
                         current_app.logger.warning(
@@ -52,26 +56,24 @@ def _block_php_and_wp_urls(client_ip):
     return False
 
 
-def _load_blocked_ips():
-    blocked_ips = []
+def _load_ips(file):
+    ips = set()
     try:
-        with open(BLOCKED_IPS_FILE, 'r') as f:
+        with open(file, 'r') as f:
             for line in f:
                 try:
                     line = line.strip()
                     if line and not line.startswith('#'):
                         if '/' in line:
-                            blocked_ips.append(
-                                ipaddress.ip_network(line, strict=False))
+                            ips.add(ipaddress.ip_network(line, strict=False))
                         else:
-                            blocked_ips.append(ipaddress.ip_address(line))
+                            ips.add(ipaddress.ip_address(line))
                 except ValueError as e:
                     current_app.logger.error(
                         f"Invalid IP address or network {line}: {e}")
     except FileNotFoundError:
-        current_app.logger.error(
-            f"Blocked IPs file {BLOCKED_IPS_FILE} not found.")
-    return blocked_ips
+        current_app.logger.error(f"Blocked IPs file {file} not found.")
+    return ips
 
 
 def _block_ip(ip):
