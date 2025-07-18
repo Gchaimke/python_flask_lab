@@ -16,8 +16,8 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.before_request
 def block_ip_ranges():
     client_ip = request.remote_addr
-    block_ips = _load_ips(BLOCKED_IPS_FILE)
     whitelist_ips = _load_ips(WHITELIST_IPS_FILE)
+    block_ips = _load_ips(BLOCKED_IPS_FILE)
     if client_ip:
 
         # Check if the client IP is in the blocked IP ranges
@@ -75,7 +75,11 @@ def _load_ips(file):
         if file in {BLOCKED_IPS_FILE, WHITELIST_IPS_FILE}:
             current_app.logger.warning(f"Blocked IPs file {file} not found, creating it.")
             with open(file, 'w') as f:
-                pass
+                if file == WHITELIST_IPS_FILE:
+                    f.write("# Add whitelisted IPs here, one per line.\n")
+                    f.write('127.0.0.1\n')
+                else:
+                    f.write("# Add blocked IPs here, one per line.\n")
         current_app.logger.error(f"Blocked IPs file {file} not found.")
     return ips
 
