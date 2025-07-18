@@ -10,30 +10,95 @@ from .db import get_by_id, insert_to_db, get_where
 from .const import LANGUAGE, ROLES, SETTINGS_DB, USERS_DB, BLOCKED_IPS_FILE
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+not_found_ip_counter = {}
 
 
 @bp.before_request
 def block_ip_ranges():
+    current_app.logger.warning(f"{not_found_ip_counter=}")
     client_ip = request.remote_addr
+    block_ips = _load_blocked_ips()
     if client_ip:
+        # Check if the client IP is in the blocked IP ranges
         try:
             client_ip_obj = ipaddress.ip_address(client_ip)
-            blocked_ips = []
-            with open(BLOCKED_IPS_FILE, 'r') as f:
-                for line in f:
-                    line = line.strip()
-                    if line and not line.startswith('#'):
-                        if '/' in line:
-                            blocked_ips.append(ipaddress.ip_network(line, strict=False))
-                        else:
-                            blocked_ips.append(ipaddress.ip_address(line))
-            for blocked_range in blocked_ips:
-                if client_ip_obj in blocked_range:
-                    current_app.logger.warning(f"Blocked access from {client_ip}")
-                    abort(500)  # Internal Server Error for blocked IP
+            for blocked_range in block_ips:
+                if isinstance(blocked_range, ipaddress.IPv4Network) or \
+                    isinstance(blocked_range, ipaddress.IPv6Network):
+                    if client_ip_obj in blocked_range:
+                        current_app.logger.warning(
+                            f"Blocked access from {client_ip} in range {blocked_range}")
+                        abort(500)
+                elif isinstance(blocked_range, ipaddress.IPv4Address) or \
+                     isinstance(blocked_range, ipaddress.IPv6Address):
+                    # If it's a single IP address, check if it matches
+                    if client_ip_obj == blocked_range:
+                        current_app.logger.warning(
+                            f"Blocked access from {client_ip}")
+                        abort(500)
         except ValueError as e:
             current_app.logger.error(f"Invalid IP address {client_ip}: {e}")
             pass
+        # Block access to PHP and WordPress URLs
+        _block_php_and_wp_urls(client_ip)
+
+
+def _block_php_and_wp_urls(client_ip):
+    """Block access to PHP and WordPress URLs."""
+    block_threshold = 3  # Number of 404 errors before blocking
+    # check if request url contains wp-admin or wp-login
+    blocked_wp_urls = ['wp-admin', 'wp-login', 'wp-json', 'wp-content']
+    if any(url in request.url for url in blocked_wp_urls) or request.url.endswith('.php'):
+        not_found_ip_counter[client_ip] = not_found_ip_counter.get(
+            client_ip, 1) + 1
+        if not_found_ip_counter.get(client_ip, 1) >= block_threshold:
+            current_app.logger.warning(
+                f"Blocked access from {client_ip} due to too many 404 errors.")
+            _block_ip(client_ip)
+            abort(500)
+        if not_found_ip_counter.get(client_ip, 1) < block_threshold:
+            current_app.logger.warning(
+                f"Blocked access to {request.url} from {client_ip}")
+            abort(code=401)
+
+
+def _load_blocked_ips():
+    blocked_ips = []
+    try:
+        with open(BLOCKED_IPS_FILE, 'r') as f:
+            for line in f:
+                try:
+                    line = line.strip()
+                    if line and not line.startswith('#'):
+                        if '/' in line:
+                            blocked_ips.append(
+                                ipaddress.ip_network(line, strict=False))
+                        else:
+                            blocked_ips.append(ipaddress.ip_address(line))
+                except ValueError as e:
+                    current_app.logger.error(
+                        f"Invalid IP address or network {line}: {e}")
+    except FileNotFoundError:
+        current_app.logger.error(
+            f"Blocked IPs file {BLOCKED_IPS_FILE} not found.")
+    return blocked_ips
+
+
+def _block_ip(ip):
+    """Block a specific IP address."""
+    if len(ip) > 50 or ' ' in ip or '\n' in ip:
+        current_app.logger.warning(
+            f"Blocked IP {ip} is too long and was not added.")
+        return
+    try:
+        ipaddress.ip_address(ip)  # Validate IP address format
+    except ValueError:
+        current_app.logger.error(f"Invalid IP address {ip} format.")
+        return
+    with open(BLOCKED_IPS_FILE, 'a') as f:
+        f.write(f"{ip}\n")
+    current_app.logger.warning(f"Blocked IP {ip} added to {BLOCKED_IPS_FILE}")
+
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
@@ -62,7 +127,8 @@ def register():
             if id := insert_to_db(table_name=USERS_DB, data=data):
                 flash(f'Hello {username}', category='info')
                 session['user_id'] = id
-                current_app.logger.info(f'New user registered {username} from {request.remote_addr}')
+                current_app.logger.info(
+                    f'New user registered {username} from {request.remote_addr}')
                 return redirect(url_for("index"))
 
         if error:
@@ -80,11 +146,13 @@ def login():
         if user and check_password_hash(user['password'], password):
             session.clear()
             session['user_id'] = user['id']
-            current_app.logger.info(f'{username=} logged in from {request.remote_addr}.')
+            current_app.logger.info(
+                f'{username=} logged in from {request.remote_addr}.')
             return redirect(url_for('lab.index'))
 
         flash('Incorrect password or user not exists!', category='danger')
-        current_app.logger.error(f'{request.remote_addr=} | Login Alert {username=} {password=}')
+        current_app.logger.error(
+            f'{request.remote_addr=} | Login Alert {username=} {password=}')
     return render_template('auth/login.html')
 
 
@@ -125,7 +193,8 @@ def min_role_required(min_role_to):
 
             if not g.user or g.user['role'] < settings[f'min_role_to_{min_role_to}']:
                 if g.user:
-                    flash(f"You don\'t have permissions for this!", category='danger')
+                    flash(f"You don\'t have permissions for this!",
+                          category='danger')
                     return redirect(url_for('lab.index'))
                 return redirect(url_for('auth.login'))
 
