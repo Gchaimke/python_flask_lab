@@ -92,27 +92,26 @@ def test_register_validate_input_with_email(client, username, view_name, email, 
     )
     assert message in response.data
 
-
-def test_block_ip_ranges(client, app):
-    with app.app_context():
-        good_ips = ['192.168.1.100', '2a02:e34:ec80:b790:bf99:b86b:617:7b66']
-        for ip in good_ips:
-            response = client.get('/auth/login', environ_base={'REMOTE_ADDR': ip})
-            assert response.status_code == 200
-        # Simulate a blocked IP address
-        blocked_ips = ['141.95.0.0', '2a01:e34:ec80:b790:bf99:b86b:617:7b66']
-        for ip in blocked_ips:
-            response = client.get('/auth/login', environ_base={'REMOTE_ADDR': ip})
-            assert response.status_code == 500
-
-
 def test_block_php_and_wp_urls(client, app):
     with app.app_context():
         response = client.get(f'/auth/test.php')
         assert response.status_code == 200
-        response = client.get(f'/auth/test.php', environ_base={'REMOTE_ADDR': '192.168.3.101'})
+        response = client.get(f'/auth/test.php', environ_base={'REMOTE_ADDR': '192.168.1.100'})
         assert response.status_code == 500
         wp_phrases = ['wp-admin', 'wp-login', 'wp-json', 'wp-content', 'wp-content']
         for wp_phrase in wp_phrases:
-            response = client.get(f'/auth/{wp_phrase}', environ_base={'REMOTE_ADDR': '192.168.2.101'})
+            response = client.get(f'/auth/{wp_phrase}', environ_base={'REMOTE_ADDR': '2a02:e34:ec80:b790:bf99:b86b:617:7b66'})
+            assert response.status_code == 500
+
+
+def test_block_ip_ranges(client, app):
+    with app.app_context():
+        good_ips = ['192.168.1.101', '2a02:e34:ec80::']
+        for ip in good_ips:
+            response = client.get('/auth/login', environ_base={'REMOTE_ADDR': ip})
+            assert response.status_code == 200
+        # Simulate a blocked IP address
+        blocked_ips = ['192.168.1.100', '2a02:e34:ec80:b790:bf99:b86b:617:7b66']
+        for ip in blocked_ips:
+            response = client.get('/auth/login', environ_base={'REMOTE_ADDR': ip})
             assert response.status_code == 500

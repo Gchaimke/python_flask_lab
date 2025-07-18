@@ -72,7 +72,7 @@ def _load_ips(file):
                     current_app.logger.error(
                         f"Invalid IP address or network {line}: {e}")
     except FileNotFoundError:
-        if file not in {BLOCKED_IPS_FILE, WHITELIST_IPS_FILE}:
+        if file in {BLOCKED_IPS_FILE, WHITELIST_IPS_FILE}:
             current_app.logger.warning(f"Blocked IPs file {file} not found, creating it.")
             with open(file, 'w') as f:
                 pass
