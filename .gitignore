@@ -23,3 +23,5 @@ instance/config.py
 virtualenv.pyz
 wp-content/
 flask_lab/static/img/public/products/power_supplies
+flask_lab/whitelist_ips.txt
+flask_lab/blocked_ips.txt
