@@ -1,5 +1,6 @@
 import functools
 import ipaddress
+import re
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for
@@ -10,12 +11,10 @@ from .db import get_by_id, insert_to_db, get_where
 from .const import LANGUAGE, ROLES, SETTINGS_DB, USERS_DB, BLOCKED_IPS_FILE
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
-not_found_ip_counter = {}
 
 
 @bp.before_request
 def block_ip_ranges():
-    current_app.logger.warning(f"{not_found_ip_counter=}")
     client_ip = request.remote_addr
     block_ips = _load_blocked_ips()
     if client_ip:
@@ -40,26 +39,17 @@ def block_ip_ranges():
             current_app.logger.error(f"Invalid IP address {client_ip}: {e}")
             pass
         # Block access to PHP and WordPress URLs
-        _block_php_and_wp_urls(client_ip)
+        if _block_php_and_wp_urls(client_ip):
+            abort(500)
 
 
 def _block_php_and_wp_urls(client_ip):
     """Block access to PHP and WordPress URLs."""
-    block_threshold = 3  # Number of 404 errors before blocking
-    # check if request url contains wp-admin or wp-login
     blocked_wp_urls = ['wp-admin', 'wp-login', 'wp-json', 'wp-content']
     if any(url in request.url for url in blocked_wp_urls) or request.url.endswith('.php'):
-        not_found_ip_counter[client_ip] = not_found_ip_counter.get(
-            client_ip, 1) + 1
-        if not_found_ip_counter.get(client_ip, 1) >= block_threshold:
-            current_app.logger.warning(
-                f"Blocked access from {client_ip} due to too many 404 errors.")
-            _block_ip(client_ip)
-            abort(500)
-        if not_found_ip_counter.get(client_ip, 1) < block_threshold:
-            current_app.logger.warning(
-                f"Blocked access to {request.url} from {client_ip}")
-            abort(code=401)
+        _block_ip(client_ip)
+        return True
+    return False
 
 
 def _load_blocked_ips():
